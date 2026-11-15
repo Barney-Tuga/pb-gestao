@@ -1,0 +1,100 @@
+.pb-window-body {
+  height: 100%;
+  overflow: auto;
+  padding: 18px;
+  color: #1f2937;
+}
+
+.pb-window-body h2,
+.pb-window-body h3 {
+  margin: 0 0 12px;
+}
+
+.pb-window-body p {
+  margin: 8px 0;
+}
+
+.pb-error {
+  color: #991b1b;
+}
+
+.pb-notice {
+  color: #166534;
+}
+
+.pb-demo-note {
+  padding: 8px;
+  color: #854d0e;
+  background: #fef9c3;
+}
+
+.pb-table-wrap {
+  overflow: auto;
+}
+
+.pb-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.pb-table th,
+.pb-table td {
+  padding: 8px;
+  border: 1px solid #e2e8f0;
+  text-align: left;
+}
+
+.pb-table tbody tr[tabindex] {
+  cursor: pointer;
+}
+
+.pb-table tbody tr[tabindex]:hover,
+.pb-table tbody tr[tabindex]:focus-visible {
+  background: #eff6ff;
+}
+
+.pb-form {
+  display: grid;
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.pb-form label {
+  display: grid;
+  gap: 4px;
+}
+
+.pb-form input:not([type='checkbox']),
+.pb-form select {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  background: #fff;
+}
+
+.pb-form .pb-check {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.pb-form button {
+  justify-self: start;
+}
+
+.pb-new-fields fieldset {
+  display: grid;
+  gap: 8px;
+  margin-top: 12px;
+  border: 1px solid #cbd5e1;
+}
+
+.pb-operation {
+  padding-top: 16px;
+  border-top: 1px solid #e2e8f0;
+}
+
+[hidden] {
+  display: none !important;
+}

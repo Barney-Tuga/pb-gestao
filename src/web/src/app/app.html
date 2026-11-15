@@ -1,4 +1,1330 @@
-<main>
-  <h1>PB Gestao</h1>
-  <p>Aplicação em desenvolvimento.</p>
-</main>
+<div class="pb-app-shell">
+  @if (loading) {
+    <main class="boot-screen">
+      <span class="brand-mark">PB</span>
+      <p>A preparar o espaço de trabalho…</p>
+    </main>
+  } @else if (!user()) {
+    <header class="app-topbar login-topbar">
+      <a class="brand-lockup" href="/" aria-label="PB Gestão, início">
+        <span class="brand-mark">PB</span>
+        <span>Gestão</span>
+      </a>
+      <span class="login-topbar-note">Acesso de utilizador</span>
+    </header>
+
+    <main class="login-scene">
+      <section class="login-panel">
+        <div class="login-emblem" aria-hidden="true">PB</div>
+        <h1>Iniciar sessão</h1>
+        <p class="login-description">Entre com a conta local criada pela administração.</p>
+        @if (error) {
+          <div class="alert alert-error" role="alert">{{ error }}</div>
+        }
+        <form class="stacked-form" (ngSubmit)="login()">
+          <label for="login-email">Email</label>
+          <input
+            id="login-email"
+            name="loginEmail"
+            type="email"
+            autocomplete="username"
+            [(ngModel)]="loginEmail"
+            required
+          />
+          <label for="login-password">Palavra-passe</label>
+          <input
+            id="login-password"
+            name="loginPassword"
+            type="password"
+            autocomplete="current-password"
+            [(ngModel)]="loginPassword"
+            required
+          />
+          <button class="button button-primary full-width" type="submit" [disabled]="busy">
+            {{ busy ? 'A validar…' : 'Entrar no espaço' }}
+          </button>
+        </form>
+        <p class="login-footnote">Não existe registo público.</p>
+      </section>
+    </main>
+  } @else {
+    <header class="app-topbar">
+      <nav class="module-strip" aria-label="Módulos disponíveis">
+        <button
+          class="module-button"
+          [class.active]="activeWindowId === 'customers'"
+          type="button"
+          (click)="openWindow('customers')"
+        >
+          <span class="module-icon" aria-hidden="true">👥</span>
+          <span>Clientes</span>
+        </button>
+        <button
+          class="module-button"
+          [class.active]="activeWindowId === 'suppliers'"
+          type="button"
+          (click)="openWindow('suppliers')"
+        >
+          <span class="module-icon" aria-hidden="true">🏷️</span>
+          <span>Fornecedores</span>
+        </button>
+        <button
+          class="module-button"
+          [class.active]="
+            activeWindowId === 'articles' ||
+            activeWindowId === 'new-article' ||
+            activeWindowId === 'article-detail'
+          "
+          type="button"
+          (click)="openWindow('articles')"
+        >
+          <span class="module-icon" aria-hidden="true">📦</span>
+          <span>Artigos</span>
+        </button>
+        <button
+          class="module-button"
+          [class.active]="activeWindowId === 'units' || activeWindowId === 'new-unit'"
+          type="button"
+          (click)="openWindow('units')"
+        >
+          <span class="module-icon" aria-hidden="true">📏</span>
+          <span>Unidades</span>
+        </button>
+      </nav>
+
+      <div class="topbar-account">
+        @if (user()?.isAdmin) {
+          <button
+            class="icon-btn account-settings"
+            type="button"
+            title="Acessos"
+            aria-label="Acessos"
+            (click)="openWindow('accounts')"
+          >⚙️</button>
+        }
+        <button
+          class="icon-btn logout-button"
+          type="button"
+          title="Terminar sessão"
+          aria-label="Terminar sessão"
+          (click)="logout()"
+          [disabled]="busy"
+        >
+          <span aria-hidden="true">👤</span><span class="sr-only">Terminar sessão</span>
+        </button>
+      </div>
+    </header>
+
+    <div class="workspace-layout app-frame">
+      <aside class="side-navigation left-column" aria-label="Navegação do espaço de trabalho">
+        <div class="side-heading left-header">
+          <span class="side-heading-mark" aria-hidden="true">▰</span>
+          <span>Ferramentas</span>
+        </div>
+        <ul class="tools-list">
+          <li>
+            <button
+              class="nav-item"
+              [class.selected]="activeMainView === 'customers'"
+              type="button"
+              (click)="setMainView('customers')"
+            >
+              <span>Clientes</span>
+            </button>
+          </li>
+          <li>
+            <button
+              class="nav-item"
+              [class.selected]="activeMainView === 'suppliers'"
+              type="button"
+              (click)="setMainView('suppliers')"
+            >
+              <span>Fornecedores</span>
+            </button>
+          </li>
+          <li>
+          <button
+            class="nav-item"
+            [class.selected]="activeMainView === 'articles'"
+            type="button"
+            (click)="setMainView('articles')"
+          >
+            <span>Artigos</span>
+          </button>
+          </li>
+          <li>
+          <button
+            class="nav-item"
+            [class.selected]="activeMainView === 'units'"
+            type="button"
+            (click)="setMainView('units')"
+          >
+            <span>Unidades</span>
+          </button>
+          </li>
+
+        @if (user()?.isAdmin) {
+          <li>
+            <button
+              class="nav-item"
+              [class.selected]="activeWindowId === 'new-article'"
+              type="button"
+              (click)="openWindow('new-article')"
+            >
+              <span>Novo artigo</span>
+            </button>
+          </li>
+        }
+        @if (user()?.isAdmin) {
+          <li>
+            <button
+              class="nav-item"
+              [class.selected]="activeWindowId === 'accounts'"
+              type="button"
+              (click)="openWindow('accounts')"
+            >
+              <span>Contas locais</span>
+            </button>
+          </li>
+        }
+        </ul>
+
+        <div class="navigation-note">
+          <span class="navigation-note-mark" aria-hidden="true">●</span>
+          <div>
+            <p>{{ networkAvailable ? 'Sistema · Ligado' : 'Sistema · Offline · apenas leitura' }}</p>
+            <small>As escritas ficam bloqueadas sem rede.</small>
+          </div>
+        </div>
+      </aside>
+
+      <div class="center-column">
+      <main class="workspace-main right-column">
+        <div class="tabs" role="tablist" aria-label="Vistas do espaço de trabalho">
+          <button
+            class="tab"
+            [class.active]="activeMainView === 'dashboard'"
+            role="tab"
+            [attr.aria-selected]="activeMainView === 'dashboard'"
+            type="button"
+            (click)="setMainView('dashboard')"
+          >
+            <span class="icon" aria-hidden="true">📊</span><span class="label">Dashboard</span>
+          </button>
+          <button
+            class="tab"
+            [class.active]="activeMainView === 'customers'"
+            role="tab"
+            [attr.aria-selected]="activeMainView === 'customers'"
+            type="button"
+            (click)="setMainView('customers')"
+          >
+            <span class="icon" aria-hidden="true">👥</span><span class="label">Clientes</span>
+          </button>
+          <button
+            class="tab"
+            [class.active]="activeMainView === 'suppliers'"
+            role="tab"
+            [attr.aria-selected]="activeMainView === 'suppliers'"
+            type="button"
+            (click)="setMainView('suppliers')"
+          >
+            <span class="icon" aria-hidden="true">🏷️</span><span class="label">Fornecedores</span>
+          </button>
+          <button
+            class="tab"
+            [class.active]="activeMainView === 'articles'"
+            role="tab"
+            [attr.aria-selected]="activeMainView === 'articles'"
+            type="button"
+            (click)="setMainView('articles')"
+          >
+            <span class="icon" aria-hidden="true">📦</span><span class="label">Artigos</span>
+          </button>
+          <button
+            class="tab"
+            [class.active]="activeMainView === 'units'"
+            role="tab"
+            [attr.aria-selected]="activeMainView === 'units'"
+            type="button"
+            (click)="setMainView('units')"
+          >
+            <span class="icon" aria-hidden="true">📏</span><span class="label">Unidades</span>
+          </button>
+        </div>
+
+        <section id="tables-area" class="tables-area">
+          <div class="tables-toolbar" role="search">
+            <div class="tables-filter">
+              <label class="sr-only" for="table-filter">Pesquisar por</label>
+              <select id="table-filter" [(ngModel)]="tableFilter">
+                <option value="any">Qualquer</option>
+                <option value="code">Código / SKU</option>
+                <option value="name">Nome / artigo</option>
+                <option value="unit">Unidade</option>
+              </select>
+              <label class="sr-only" for="table-search">Pesquisar na vista atual</label>
+              <input
+                id="table-search"
+                type="search"
+                [(ngModel)]="tableSearch"
+                placeholder="Pesquisar..."
+              />
+            </div>
+          </div>
+
+        <section class="workspace-home" aria-label="Área de trabalho">
+          @if (activeMainView === 'dashboard') {
+            <div class="dashboard-home">
+              <div class="dashboard-overview data-panel">
+                <section class="dashboard-hero">
+                  <h2>Bem-vindo ao PB Gestão</h2>
+                  <p>Resumo do catálogo e do estado da aplicação.</p>
+                </section>
+                <div class="dashboard-cards" aria-label="Resumo da aplicação">
+                  <article class="card metric">
+                    <span class="card-icon" aria-hidden="true">📦</span>
+                    <div>
+                      <strong class="metric-value">{{ summaries.length }}</strong><span
+                        class="metric-label"
+                        >Artigos no catálogo</span
+                      >
+                    </div>
+                  </article>
+                  <article class="card metric">
+                    <span class="card-icon" aria-hidden="true">📏</span>
+                    <div>
+                      <strong class="metric-value">{{ units.length }}</strong><span
+                        class="metric-label"
+                        >Unidades disponíveis</span
+                      >
+                    </div>
+                  </article>
+                  <article class="card metric">
+                    <span class="card-icon" aria-hidden="true">🌐</span>
+                    <div>
+                      <strong class="metric-value">{{
+                        networkAvailable ? 'Disponível' : 'Offline'
+                      }}</strong><span class="metric-label">Ligação à rede</span>
+                    </div>
+                  </article>
+                  <article class="card metric">
+                    <span class="card-icon" aria-hidden="true">⚙️</span>
+                    <div>
+                      <strong class="metric-value">{{
+                        user()?.isAdmin ? 'Administração' : 'Consulta'
+                      }}</strong><span class="metric-label">Acesso atual</span>
+                    </div>
+                  </article>
+                </div>
+              </div>
+              <div class="table-wrap workbench-table-wrap data-panel dashboard-table">
+                <table class="data-table workbench-table">
+                  <thead>
+                    <tr>
+                      <th scope="col">Código Gescom</th>
+                      <th scope="col">Artigo</th>
+                      <th scope="col">Unidade</th>
+                      <th scope="col">Níveis de preço · IVA incluído</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    @for (article of filteredSummaries; track article.id) {
+                      <tr>
+                        <td>{{ article.gescomCode }}</td>
+                        <td><strong>{{ article.name }}</strong></td>
+                        <td>{{ article.unitCode }}</td>
+                        <td>
+                          <div class="price-inline">
+                            @for (price of article.prices; track price.level) {
+                              <span
+                                >N{{ price.level }}
+                                <strong>{{
+                                  price.priceWithVat === null
+                                    ? '—'
+                                    : (price.priceWithVat | number: '1.2-2')
+                                }}</strong></span
+                              >
+                            }
+                          </div>
+                        </td>
+                      </tr>
+                    } @empty {
+                      <tr>
+                        <td class="table-empty" colspan="4">
+                          {{
+                            tableSearch
+                              ? 'Não foram encontrados artigos.'
+                              : 'Ainda não existem artigos no catálogo.'
+                          }}
+                        </td>
+                      </tr>
+                    }
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          }
+
+          @if (activeMainView === 'articles') {
+            <div class="table-wrap workbench-table-wrap data-panel">
+              <table class="data-table workbench-table">
+                <thead>
+                  <tr>
+                    <th scope="col">Código Gescom</th>
+                    <th scope="col">Artigo</th>
+                    <th scope="col">Unidade</th>
+                    <th scope="col">Níveis de preço · IVA incluído</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  @for (article of filteredSummaries; track article.id) {
+                    <tr>
+                      <td>{{ article.gescomCode }}</td>
+                      <td>
+                        <strong>{{ article.name }}</strong><small
+                          >{{ article.category || 'Sem categoria' }} ·
+                          {{ article.brand || 'Sem marca' }}</small
+                        >
+                      </td>
+                      <td>{{ article.unitCode }}</td>
+                      <td>
+                        <div class="price-inline">
+                          @for (price of article.prices; track price.level) {
+                            <span
+                              >N{{ price.level }}
+                              <strong>{{
+                                price.priceWithVat === null
+                                  ? '—'
+                                  : (price.priceWithVat | number: '1.2-2')
+                              }}</strong></span
+                            >
+                          }
+                        </div>
+                      </td>
+                    </tr>
+                  } @empty {
+                    <tr>
+                      <td class="table-empty" colspan="4">
+                        {{
+                          tableSearch
+                            ? 'Não foram encontrados artigos.'
+                            : 'Ainda não existem artigos no catálogo.'
+                        }}
+                      </td>
+                    </tr>
+                  }
+                </tbody>
+              </table>
+            </div>
+          }
+
+          @if (activeMainView === 'units') {
+            <div class="table-wrap workbench-table-wrap data-panel">
+              <table class="data-table workbench-table">
+                <thead>
+                  <tr>
+                    <th scope="col">Código</th>
+                    <th scope="col">Designação</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  @for (unit of filteredUnits; track unit.id) {
+                    <tr>
+                      <td>{{ unit.code }}</td>
+                      <td>
+                        <strong>{{ unit.name }}</strong>
+                      </td>
+                    </tr>
+                  } @empty {
+                    <tr>
+                      <td class="table-empty" colspan="2">
+                        {{
+                          tableSearch
+                            ? 'Não foram encontradas unidades.'
+                            : 'Ainda não existem unidades.'
+                        }}
+                      </td>
+                    </tr>
+                  }
+                </tbody>
+              </table>
+            </div>
+          }
+
+          @if (activeMainView === 'customers' || activeMainView === 'suppliers') {
+            <div class="table-wrap workbench-table-wrap data-panel">
+              <table class="data-table workbench-table">
+                <thead>
+                  <tr>
+                    <th scope="col">ID</th>
+                    <th scope="col">Nome</th>
+                    <th scope="col">Contacto</th>
+                    <th scope="col">Email</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="table-empty" colspan="4">
+                      {{ activeMainView === 'customers' ? 'Consulta de clientes ainda não disponível.' : 'Consulta de fornecedores ainda não disponível.' }}
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          }
+        </section>
+        </section>
+
+        @if (error) {
+          <div class="alert alert-error workspace-alert" role="alert">{{ error }}</div>
+        }
+        @if (notice) {
+          <div class="alert alert-success workspace-alert" role="status">{{ notice }}</div>
+        }
+        @if (busy) {
+          <div class="busy-line" role="status"><span></span>A guardar alterações…</div>
+        }
+
+        <section class="window-stage window-container" #windowStage aria-label="Janelas flutuantes">
+          @for (workspaceWindow of visibleWindows; track workspaceWindow.id) {
+            <section
+              class="workspace-window"
+              [class.active]="activeWindowId === workspaceWindow.id"
+              [class.maximized]="workspaceWindow.maximized"
+              [style.z-index]="workspaceWindow.zIndex"
+              [style.width.px]="workspaceWindow.maximized ? null : workspaceWindow.width"
+              [style.height.px]="workspaceWindow.maximized ? null : workspaceWindow.height"
+              [style.left.px]="workspaceWindow.maximized ? null : workspaceWindow.x"
+              [style.top.px]="workspaceWindow.maximized ? null : workspaceWindow.y"
+              [attr.id]="'window-' + workspaceWindow.id"
+              [attr.aria-label]="workspaceWindow.title"
+              [attr.aria-hidden]="activeWindowId !== workspaceWindow.id"
+              [attr.inert]="activeWindowId !== workspaceWindow.id ? '' : null"
+              role="tabpanel"
+              (pointerdown)="focusWindow(workspaceWindow.id)"
+            >
+              <header
+                class="window-titlebar"
+                (pointerdown)="startWindowDrag($event, workspaceWindow.id)"
+              >
+                <div class="window-heading">
+                  <span class="window-icon" aria-hidden="true">{{ workspaceWindow.icon }}</span>
+                  <span>{{ workspaceWindow.title }}</span>
+                </div>
+                <div class="window-controls">
+                  <button
+                    type="button"
+                    [attr.aria-label]="'Minimizar ' + workspaceWindow.title"
+                    title="Minimizar"
+                    (click)="minimizeWindow(workspaceWindow.id); $event.stopPropagation()"
+                  >
+                    −
+                  </button>
+                  <button
+                    class="window-maximize"
+                    type="button"
+                    [attr.aria-label]="
+                      (workspaceWindow.maximized ? 'Restaurar ' : 'Maximizar ') +
+                      workspaceWindow.title
+                    "
+                    [title]="workspaceWindow.maximized ? 'Restaurar' : 'Maximizar'"
+                    (click)="toggleMaximize(workspaceWindow.id); $event.stopPropagation()"
+                  >
+                    {{ workspaceWindow.maximized ? '❐' : '□' }}
+                  </button>
+                  <button
+                    class="window-close"
+                    type="button"
+                    [attr.aria-label]="'Fechar ' + workspaceWindow.title"
+                    title="Fechar"
+                    (click)="closeWindow(workspaceWindow.id); $event.stopPropagation()"
+                  >
+                    ×
+                  </button>
+                </div>
+              </header>
+
+              <div class="window-body">
+                @switch (workspaceWindow.id) {
+                  @case ('dashboard') {
+                    <section class="dashboard-view">
+                      <div class="dashboard-intro">
+                        <div>
+                          <h2>O trabalho, no seu espaço.</h2>
+                          <p>Abra uma área e mantenha as janelas de que precisa à mão.</p>
+                        </div>
+                        <span class="dashboard-date">{{ selectedCalendarDateLabel }}</span>
+                      </div>
+
+                      <div class="dashboard-columns">
+                        <section class="launch-list" aria-labelledby="launch-heading">
+                          <h3 id="launch-heading">Abrir uma área</h3>
+                          <button class="launch-row" type="button" (click)="openWindow('articles')">
+                            <span class="launch-icon" aria-hidden="true">📦</span>
+                            <span class="launch-copy">
+                              <strong>Artigos</strong>
+                              <small>Consultar o catálogo e os preços disponíveis</small>
+                            </span>
+                            <span class="launch-arrow" aria-hidden="true">↗</span>
+                          </button>
+                          <button class="launch-row" type="button" (click)="openWindow('units')">
+                            <span class="launch-icon" aria-hidden="true">📏</span>
+                            <span class="launch-copy">
+                              <strong>Unidades</strong>
+                              <small>Ver as unidades de venda configuradas</small>
+                            </span>
+                            <span class="launch-arrow" aria-hidden="true">↗</span>
+                          </button>
+                          <button
+                            class="launch-row"
+                            type="button"
+                            (click)="openWindow('customers')"
+                          >
+                            <span class="launch-icon" aria-hidden="true">👥</span>
+                            <span class="launch-copy">
+                              <strong>Clientes</strong>
+                              <small>Abrir a área preparada para clientes</small>
+                            </span>
+                            <span class="launch-arrow" aria-hidden="true">↗</span>
+                          </button>
+                          <button
+                            class="launch-row"
+                            type="button"
+                            (click)="openWindow('suppliers')"
+                          >
+                            <span class="launch-icon" aria-hidden="true">🏷️</span>
+                            <span class="launch-copy">
+                              <strong>Fornecedores</strong>
+                              <small>Abrir a área preparada para fornecedores</small>
+                            </span>
+                            <span class="launch-arrow" aria-hidden="true">↗</span>
+                          </button>
+                          @if (user()?.isAdmin) {
+                            <button
+                              class="launch-row"
+                              type="button"
+                              (click)="openWindow('new-article')"
+                            >
+                              <span class="launch-icon" aria-hidden="true">＋</span>
+                              <span class="launch-copy">
+                                <strong>Novo artigo</strong>
+                                <small>Adicionar um artigo ao catálogo</small>
+                              </span>
+                              <span class="launch-arrow" aria-hidden="true">↗</span>
+                            </button>
+                          }
+                        </section>
+
+                        <aside class="session-summary">
+                          <h3>Estado da sessão</h3>
+                          <div class="summary-row">
+                            <span>Artigos disponíveis</span>
+                            <strong>{{
+                              user()?.isAdmin ? adminArticles.length : summaries.length
+                            }}</strong>
+                          </div>
+                          <div class="summary-row">
+                            <span>Unidades configuradas</span>
+                            <strong>{{ units.length }}</strong>
+                          </div>
+                          <div class="summary-row">
+                            <span>Ligação de rede</span>
+                            <strong [class.summary-offline]="!networkAvailable">
+                              {{ networkAvailable ? 'Disponível' : 'Offline' }}
+                            </strong>
+                          </div>
+                          <p>
+                            Sem rede, a aplicação mantém apenas a leitura de dados já disponíveis.
+                          </p>
+                        </aside>
+                      </div>
+                    </section>
+                  }
+
+                  @case ('articles') {
+                    <section class="window-view">
+                      <div class="view-toolbar">
+                        <div>
+                          <h2>Catálogo de artigos</h2>
+                          <p>
+                            {{
+                              user()?.isAdmin
+                                ? 'Selecione um artigo para abrir a respetiva ficha.'
+                                : 'Preços apresentados com IVA incluído.'
+                            }}
+                          </p>
+                        </div>
+                        @if (user()?.isAdmin) {
+                          <button
+                            class="button button-primary"
+                            type="button"
+                            (click)="openWindow('new-article')"
+                          >
+                            Novo artigo
+                          </button>
+                        }
+                      </div>
+
+                      @if (user()?.isAdmin) {
+                        <div class="table-wrap">
+                          <table class="data-table">
+                            <thead>
+                              <tr>
+                                <th scope="col">Código Gescom</th>
+                                <th scope="col">Designação</th>
+                                <th scope="col">Unidade</th>
+                                <th scope="col">Estado</th>
+                                <th scope="col"><span class="sr-only">Ação</span></th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              @for (article of adminArticles; track article.id) {
+                                <tr>
+                                  <td>
+                                    <button
+                                      class="table-link"
+                                      type="button"
+                                      (click)="selectArticle(article)"
+                                    >
+                                      {{ article.gescomCode }}
+                                    </button>
+                                  </td>
+                                  <td>
+                                    <strong>{{ article.name }}</strong>
+                                    <small
+                                      >{{ article.category || 'Sem categoria' }} ·
+                                      {{ article.brand || 'Sem marca' }}</small
+                                    >
+                                  </td>
+                                  <td>{{ article.unitCode }}</td>
+                                  <td>
+                                    <span
+                                      class="state-tag"
+                                      [class.state-inactive]="!article.isActive"
+                                    >
+                                      {{ article.isActive ? 'Ativo' : 'Inativo' }}
+                                    </span>
+                                  </td>
+                                  <td>
+                                    <button
+                                      class="row-action"
+                                      type="button"
+                                      (click)="selectArticle(article)"
+                                    >
+                                      Abrir ficha <span aria-hidden="true">↗</span>
+                                    </button>
+                                  </td>
+                                </tr>
+                              } @empty {
+                                <tr>
+                                  <td class="table-empty" colspan="5">
+                                    Não foram encontrados artigos.
+                                  </td>
+                                </tr>
+                              }
+                            </tbody>
+                          </table>
+                        </div>
+                      } @else {
+                        <div class="table-wrap">
+                          <table class="data-table reader-table">
+                            <thead>
+                              <tr>
+                                <th scope="col">Código</th>
+                                <th scope="col">Artigo</th>
+                                <th scope="col">Unidade</th>
+                                <th scope="col">Níveis de preço · IVA incluído</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              @for (article of summaries; track article.id) {
+                                <tr>
+                                  <td>{{ article.gescomCode }}</td>
+                                  <td>
+                                    <strong>{{ article.name }}</strong>
+                                    <small
+                                      >{{ article.category || 'Sem categoria' }} ·
+                                      {{ article.brand || 'Sem marca' }}</small
+                                    >
+                                  </td>
+                                  <td>{{ article.unitCode }}</td>
+                                  <td>
+                                    <div class="price-inline">
+                                      @for (price of article.prices; track price.level) {
+                                        <span
+                                          >N{{ price.level }}
+                                          <strong>{{
+                                            price.priceWithVat === null
+                                              ? '—'
+                                              : (price.priceWithVat | number: '1.2-2')
+                                          }}</strong></span
+                                        >
+                                      }
+                                    </div>
+                                  </td>
+                                </tr>
+                              } @empty {
+                                <tr>
+                                  <td class="table-empty" colspan="4">
+                                    Não foram encontrados artigos.
+                                  </td>
+                                </tr>
+                              }
+                            </tbody>
+                          </table>
+                        </div>
+                      }
+                    </section>
+                  }
+
+                  @case ('units') {
+                    <section class="window-view">
+                      <div class="view-toolbar">
+                        <div>
+                          <h2>Unidades de venda</h2>
+                          <p>A unidade principal mantém-se fixa em cada artigo.</p>
+                        </div>
+                        @if (user()?.isAdmin) {
+                          <button
+                            class="button button-primary"
+                            type="button"
+                            (click)="openWindow('new-unit')"
+                          >
+                            Nova unidade
+                          </button>
+                        }
+                      </div>
+                      <div class="table-wrap">
+                        <table class="data-table">
+                          <thead>
+                            <tr>
+                              <th scope="col">Código</th>
+                              <th scope="col">Designação</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            @for (unit of units; track unit.id) {
+                              <tr>
+                                <td>
+                                  <strong>{{ unit.code }}</strong>
+                                </td>
+                                <td>{{ unit.name }}</td>
+                              </tr>
+                            } @empty {
+                              <tr>
+                                <td class="table-empty" colspan="2">
+                                  Ainda não existem unidades configuradas.
+                                </td>
+                              </tr>
+                            }
+                          </tbody>
+                        </table>
+                      </div>
+                    </section>
+                  }
+
+                  @case ('new-unit') {
+                    <section class="window-view">
+                      <div class="view-toolbar">
+                        <div>
+                          <h2>Nova unidade de venda</h2>
+                          <p>Indique o código e a designação da unidade.</p>
+                        </div>
+                      </div>
+                      <form class="unit-create-form" (ngSubmit)="createUnit()">
+                        <label
+                          >Código
+                          <input name="unitCode" [(ngModel)]="unitCode" maxlength="24" required />
+                        </label>
+                        <label
+                          >Designação
+                          <input name="unitName" [(ngModel)]="unitName" maxlength="80" required />
+                        </label>
+                        <button class="button button-primary" type="submit" [disabled]="busy">
+                          Criar unidade
+                        </button>
+                      </form>
+                    </section>
+                  }
+
+                  @case ('customers') {
+                    <section class="window-view">
+                      <div class="view-toolbar">
+                        <div>
+                          <h2>Clientes</h2>
+                          <p>A consulta e a gestão de registos ainda não estão disponíveis.</p>
+                        </div>
+                      </div>
+                      <div class="table-wrap">
+                        <table class="data-table">
+                          <thead>
+                            <tr>
+                              <th scope="col">ID</th>
+                              <th scope="col">Nome</th>
+                              <th scope="col">Contacto</th>
+                              <th scope="col">Email</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <tr>
+                              <td class="table-empty" colspan="4">
+                                Ainda não existem clientes para apresentar.
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </section>
+                  }
+
+                  @case ('suppliers') {
+                    <section class="window-view">
+                      <div class="view-toolbar">
+                        <div>
+                          <h2>Fornecedores</h2>
+                          <p>A consulta e a gestão de registos ainda não estão disponíveis.</p>
+                        </div>
+                      </div>
+                      <div class="table-wrap">
+                        <table class="data-table">
+                          <thead>
+                            <tr>
+                              <th scope="col">ID</th>
+                              <th scope="col">Nome</th>
+                              <th scope="col">Contacto</th>
+                              <th scope="col">Email</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <tr>
+                              <td class="table-empty" colspan="4">
+                                Ainda não existem fornecedores para apresentar.
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </section>
+                  }
+
+                  @case ('new-article') {
+                    <section class="window-view">
+                      <div class="view-toolbar">
+                        <div>
+                          <h2>Novo artigo</h2>
+                          <p>Os campos obrigatórios são validados antes de guardar.</p>
+                        </div>
+                      </div>
+                      <form class="form-grid" (ngSubmit)="createArticle()">
+                        <label
+                          >Código Gescom
+                          <input
+                            name="gescomCode"
+                            [(ngModel)]="gescomCode"
+                            maxlength="80"
+                            required
+                          />
+                        </label>
+                        <label
+                          >Designação
+                          <input
+                            name="articleName"
+                            [(ngModel)]="articleName"
+                            maxlength="200"
+                            required
+                          />
+                        </label>
+                        <label
+                          >Unidade de venda
+                          <select name="unitId" [(ngModel)]="unitId" required>
+                            <option value="" disabled>Selecionar unidade</option>
+                            @for (unit of units; track unit.id) {
+                              <option [value]="unit.id">{{ unit.code }} — {{ unit.name }}</option>
+                            }
+                          </select>
+                        </label>
+                        <label
+                          >Custo comercial sem IVA
+                          <input
+                            name="costAmount"
+                            type="number"
+                            min="0"
+                            step="0.0001"
+                            [(ngModel)]="costAmount"
+                            placeholder="Opcional"
+                          />
+                        </label>
+                        <label
+                          >Categoria
+                          <input name="category" [(ngModel)]="category" maxlength="100" />
+                        </label>
+                        <label
+                          >Marca
+                          <input name="brand" [(ngModel)]="brand" maxlength="100" />
+                        </label>
+                        <label class="checkbox-field">
+                          <input name="tracksLots" type="checkbox" [(ngModel)]="tracksLots" />
+                          Rastrear lotes
+                        </label>
+                        <fieldset class="price-levels">
+                          <legend>Margem por nível de preço (%)</legend>
+                          @for (level of [1, 2, 3, 4, 5]; track level) {
+                            <label
+                              >Nível {{ level }}
+                              <input
+                                [name]="'margin' + level"
+                                type="number"
+                                step="0.0001"
+                                [(ngModel)]="marginValues[level - 1]"
+                                required
+                              />
+                            </label>
+                          }
+                        </fieldset>
+                        <div class="form-actions">
+                          <button
+                            class="button button-primary"
+                            type="submit"
+                            [disabled]="busy || units.length === 0"
+                          >
+                            Criar artigo
+                          </button>
+                          @if (units.length === 0) {
+                            <span class="hint">Crie primeiro uma unidade.</span>
+                          }
+                        </div>
+                      </form>
+                    </section>
+                  }
+
+                  @case ('article-detail') {
+                    @if (selectedArticle; as article) {
+                      <section class="window-view">
+                        <div class="view-toolbar">
+                          <div>
+                            <h2>{{ article.name }}</h2>
+                            <p>{{ article.gescomCode }} · unidade fixa {{ article.unitCode }}</p>
+                          </div>
+                          <span class="state-tag" [class.state-inactive]="!article.isActive">
+                            {{ article.isActive ? 'Ativo' : 'Inativo' }}
+                          </span>
+                        </div>
+                        <form class="form-grid" (ngSubmit)="saveArticle()">
+                          <label
+                            >Código Gescom
+                            <input
+                              name="editGescomCode"
+                              [(ngModel)]="article.gescomCode"
+                              maxlength="80"
+                              required
+                            />
+                          </label>
+                          <label
+                            >Designação
+                            <input
+                              name="editArticleName"
+                              [(ngModel)]="article.name"
+                              maxlength="200"
+                              required
+                            />
+                          </label>
+                          <label
+                            >Unidade fixa
+                            <input [value]="article.unitCode + ' — ' + article.unitName" readonly />
+                          </label>
+                          <label
+                            >Categoria
+                            <input
+                              name="editCategory"
+                              [(ngModel)]="article.category"
+                              maxlength="100"
+                            />
+                          </label>
+                          <label
+                            >Marca
+                            <input name="editBrand" [(ngModel)]="article.brand" maxlength="100" />
+                          </label>
+                          <label class="checkbox-field">
+                            <input
+                              name="editTracksLots"
+                              type="checkbox"
+                              [(ngModel)]="article.tracksLots"
+                            />
+                            Rastrear lotes
+                          </label>
+                          <label class="checkbox-field">
+                            <input
+                              name="editIsActive"
+                              type="checkbox"
+                              [(ngModel)]="article.isActive"
+                            />
+                            Artigo ativo
+                          </label>
+                          <div class="form-actions">
+                            <button class="button button-primary" type="submit" [disabled]="busy">
+                              Guardar artigo
+                            </button>
+                          </div>
+                        </form>
+
+                        <div class="detail-grid">
+                          <form class="subform" (ngSubmit)="saveCost()">
+                            <h3>Custo comercial sem IVA</h3>
+                            <p class="hint">
+                              Atual: {{ article.cost?.amount ?? 'Por definir' }}
+                              @if (article.cost) {
+                                <span>
+                                  · atualizado {{ article.cost.changedAtUtc | date: 'short' }}</span
+                                >
+                              }
+                            </p>
+                            <label
+                              >Novo custo
+                              <input
+                                name="updateCostAmount"
+                                type="number"
+                                min="0"
+                                step="0.0001"
+                                [(ngModel)]="updateCostAmount"
+                                required
+                              />
+                            </label>
+                            <button class="button button-secondary" type="submit" [disabled]="busy">
+                              Registar custo
+                            </button>
+                          </form>
+
+                          <form class="subform" (ngSubmit)="saveMargin()">
+                            <h3>Margens de preço</h3>
+                            <label
+                              >Nível
+                              <select name="selectedMarginLevel" [(ngModel)]="selectedMarginLevel">
+                                @for (level of [1, 2, 3, 4, 5]; track level) {
+                                  <option [value]="level">
+                                    Nível {{ level }} —
+                                    {{ marginFor(article, level) ?? 'Por definir' }}%
+                                  </option>
+                                }
+                              </select>
+                            </label>
+                            <label
+                              >Nova margem (%)
+                              <input
+                                name="updateMarginPercent"
+                                type="number"
+                                step="0.0001"
+                                [(ngModel)]="updateMarginPercent"
+                                required
+                              />
+                            </label>
+                            <button class="button button-secondary" type="submit" [disabled]="busy">
+                              Guardar margem
+                            </button>
+                          </form>
+                        </div>
+
+                        <div class="subform vat-section">
+                          <h3>Taxas de IVA e vigências</h3>
+                          @if (article.vatRates.length) {
+                            <label
+                              >Editar taxa existente
+                              <select
+                                name="vatRateId"
+                                [ngModel]="vatRateId"
+                                (ngModelChange)="selectVatRate($event)"
+                              >
+                                <option value="">Nova taxa</option>
+                                @for (rate of article.vatRates; track rate.id) {
+                                  <option [value]="rate.id">
+                                    {{ rate.ratePercent }}% · desde {{ rate.validFrom }} · até
+                                    {{ rate.validTo ?? 'sem fim' }}
+                                  </option>
+                                }
+                              </select>
+                            </label>
+                          }
+                          <form class="inline-form" (ngSubmit)="saveVatRate()">
+                            <label
+                              >Taxa (%)
+                              <input
+                                name="vatRatePercent"
+                                type="number"
+                                min="0"
+                                step="0.0001"
+                                [(ngModel)]="vatRatePercent"
+                                required
+                              />
+                            </label>
+                            <label
+                              >Válida desde
+                              <input
+                                name="vatValidFrom"
+                                type="date"
+                                [(ngModel)]="vatValidFrom"
+                                required
+                              />
+                            </label>
+                            <label
+                              >Válida até (exclusivo)
+                              <input name="vatValidTo" type="date" [(ngModel)]="vatValidTo" />
+                            </label>
+                            <button class="button button-secondary" type="submit" [disabled]="busy">
+                              {{ vatRateId ? 'Atualizar taxa' : 'Criar taxa' }}
+                            </button>
+                          </form>
+                          <p class="hint">
+                            A taxa não é predefinida. Configure-a segundo o enquadramento aplicável.
+                          </p>
+                        </div>
+
+                        <section class="price-section">
+                          <div class="price-heading">
+                            <h3>Preços com IVA incluído</h3>
+                            <span>Data: {{ summaryFor(article.id)?.pricesAsOf }}</span>
+                          </div>
+                          <div class="price-grid">
+                            @for (
+                              price of summaryFor(article.id)?.prices ?? [];
+                              track price.level
+                            ) {
+                              <div class="price-card">
+                                <span>Nível {{ price.level }}</span>
+                                <strong>{{
+                                  price.priceWithVat === null
+                                    ? '—'
+                                    : (price.priceWithVat | number: '1.2-2')
+                                }}</strong>
+                                @if (price.unavailableReason) {
+                                  <small>{{ price.unavailableReason }}</small>
+                                }
+                              </div>
+                            }
+                          </div>
+                        </section>
+                      </section>
+                    } @else {
+                      <p class="empty-state">Selecione um artigo no catálogo para abrir a ficha.</p>
+                    }
+                  }
+
+                  @case ('accounts') {
+                    <section class="window-view">
+                      <div class="view-toolbar">
+                        <div>
+                          <h2>Contas locais</h2>
+                          <p>
+                            As contas são criadas pela administração; não existe registo público.
+                          </p>
+                        </div>
+                      </div>
+                      <form class="form-grid account-form" (ngSubmit)="createUser()">
+                        <label
+                          >Email
+                          <input
+                            name="userEmail"
+                            type="email"
+                            autocomplete="off"
+                            [(ngModel)]="userEmail"
+                            required
+                          />
+                        </label>
+                        <label
+                          >Palavra-passe inicial
+                          <input
+                            name="userPassword"
+                            type="password"
+                            autocomplete="new-password"
+                            [(ngModel)]="userPassword"
+                            minlength="12"
+                            required
+                          />
+                        </label>
+                        <label class="checkbox-field">
+                          <input name="userIsAdmin" type="checkbox" [(ngModel)]="userIsAdmin" />
+                          Administrador
+                        </label>
+                        <div class="form-actions">
+                          <button class="button button-primary" type="submit" [disabled]="busy">
+                            Criar conta local
+                          </button>
+                        </div>
+                      </form>
+                      <p class="hint">
+                        Use pelo menos 12 caracteres, com maiúsculas, minúsculas, número e símbolo.
+                      </p>
+                    </section>
+                  }
+                }
+              </div>
+            </section>
+          }
+        </section>
+      </main>
+      </div>
+
+      <aside class="agenda-panel" aria-label="Calendário">
+        <div class="agenda-heading">
+          <div>
+            <h2>Calendário</h2>
+            <p>Consulta de datas</p>
+          </div>
+          <span class="agenda-mark" aria-hidden="true">📅</span>
+        </div>
+        <div class="calendar-month">
+          <button type="button" aria-label="Mês anterior" (click)="previousCalendarMonth()">
+            ‹
+          </button>
+          <strong>{{ calendarMonthLabel }}</strong>
+          <button type="button" aria-label="Mês seguinte" (click)="nextCalendarMonth()">›</button>
+        </div>
+        <div class="calendar-weekdays" aria-hidden="true">
+          <span>Seg</span><span>Ter</span><span>Qua</span><span>Qui</span><span>Sex</span
+          ><span>Sáb</span><span>Dom</span>
+        </div>
+        <div class="calendar-days">
+          @for (day of calendarDays; track day.dateKey) {
+            <button
+              type="button"
+              [class.outside-month]="!day.inCurrentMonth"
+              [class.today]="day.isToday"
+              [class.selected]="day.isSelected"
+              [attr.aria-label]="'Selecionar ' + day.dateKey"
+              [attr.aria-pressed]="day.isSelected"
+              (click)="selectCalendarDay(day)"
+            >
+              {{ day.day }}
+            </button>
+          }
+        </div>
+        <div class="agenda-selection">
+          <span class="selection-marker" aria-hidden="true"></span>
+          <div>
+            <strong>{{ selectedCalendarDateLabel }}</strong>
+            <p>Sem agenda integrada neste módulo.</p>
+          </div>
+        </div>
+      </aside>
+    </div>
+
+    <footer class="status-bar">
+      <div class="status-network" [class.status-offline]="!networkAvailable">
+        <span class="network-dot" aria-hidden="true"></span>
+        {{ networkAvailable ? 'Rede disponível' : 'Offline · apenas leitura' }}
+      </div>
+      <div class="taskbar-windows" aria-label="Janelas abertas">
+        @for (workspaceWindow of windows; track workspaceWindow.id) {
+          <button
+            type="button"
+            [class.active]="activeWindowId === workspaceWindow.id && !workspaceWindow.minimized"
+            [class.minimized]="workspaceWindow.minimized"
+            (click)="restoreWindow(workspaceWindow.id)"
+          >
+            <span aria-hidden="true">{{ workspaceWindow.icon }}</span>{{ workspaceWindow.title }}
+          </button>
+        }
+      </div>
+      <span class="taskbar-brand">PB Gestão</span>
+    </footer>
+  }
+</div>

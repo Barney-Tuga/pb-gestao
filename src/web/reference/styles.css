@@ -1,0 +1,2453 @@
+:root{
+  --bg:#f6f8fb;
+  --panel:#ffffff;
+  --accent:#2563eb; /* azul moderno */
+  --accent-2:#4f46e5;
+  --muted:#6b7280;
+  --glass: rgba(255,255,255,0.6);
+  --shadow: 0 8px 24px rgba(16,24,40,0.08);
+  --radius:12px;
+  font-family: 'Inter', system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+  font-size:14px;
+  color: #111827;
+}
+*{box-sizing:border-box}
+html,body{height:100%;margin:0;background:linear-gradient(180deg,#f6f8fb 0%, #eef2ff 100%);}
+
+/* layout helpers: define header/footer heights so we can size the main frame precisely */
+:root{
+  --topbar-h: 64px;
+  --bottombar-h: 64px;
+  --bottombar-gap: 12px; /* extra spacing between footer and viewport bottom */
+}
+
+/* prevent the browser page from scrolling; internal panels will scroll instead */
+body{overflow:hidden}
+
+/* Topbar */
+.topbar{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  padding:12px 18px;
+  backdrop-filter: blur(6px);
+  background: linear-gradient(180deg, rgba(255,255,255,0.72), rgba(255,255,255,0.58));
+  border-bottom: 1px solid rgba(15,23,42,0.04);
+  box-shadow: var(--shadow);
+}
+.top-left{display:flex;align-items:center;gap:12px}
+.logo{
+  width:40px;height:40px;border-radius:9px;background:linear-gradient(135deg,var(--accent),var(--accent-2));
+  color:white;display:flex;align-items:center;justify-content:center;font-weight:700;box-shadow:0 6px 18px rgba(37,99,235,0.18)
+}
+.app-name{font-weight:600;color:var(--muted)}
+
+.top-center{flex:1;display:flex;justify-content:center}
+.search{display:flex;align-items:center;background:rgba(15,23,42,0.03);padding:6px;border-radius:999px;gap:6px;width:50%;max-width:600px}
+.search input{flex:1;border:0;background:transparent;padding:8px 10px;border-radius:999px;outline:none}
+.search button{border:0;background:transparent;cursor:pointer;padding:6px}
+
+/* top-right */
+.top-right{display:flex;gap:8px;align-items:center}
+.icon-btn{background:transparent;border:0;padding:8px;border-radius:8px;cursor:pointer}
+.icon-btn:hover{background:rgba(15,23,42,0.04)}
+
+/* Topbar file buttons (icons above labels) */
+.topbar-buttons{display:flex;gap:12px;align-items:flex-start}
+.topbar-buttons .file-btn{display:flex;flex-direction:column;align-items:center;gap:6px;padding:6px 8px;border-radius:8px;background:transparent;border:0;cursor:pointer}
+.topbar-buttons .file-btn .icon{font-size:18px}
+.topbar-buttons .file-btn .label{font-size:12px}
+
+
+/* Layout main */
+.app-frame{
+  display:grid;
+  /* left column + main content (which now contains the moved right-column as a div) */
+  grid-template-columns: 220px 1fr;
+  gap:16px;
+  padding:18px;
+  /* set exact height so the grid fits within the viewport and doesn't trigger body scroll */
+  height: calc(100vh - var(--topbar-h) - var(--bottombar-h) - var(--bottombar-gap));
+  overflow: hidden;
+}
+
+/* Left column */
+.left-column{
+  background: linear-gradient(180deg, rgba(255,255,255,0.6), rgba(255,255,255,0.5));
+  border-radius: var(--radius);
+  padding:12px;
+  box-shadow: var(--shadow);
+  display:flex;
+  flex-direction:column;
+  gap:8px;
+  min-height:0;
+}
+.left-header{display:flex;align-items:center;justify-content:space-between}
+.left-header h4{margin:0;font-size:13px;color:var(--muted)}
+.small{background:transparent;border:1px solid rgba(16,24,40,0.06);padding:6px 8px;border-radius:8px;cursor:pointer}
+.tools-list{list-style:none;padding:6px 0;margin:0;display:flex;flex-direction:column;gap:6px;overflow:auto}
+.tools-list li{
+  background:linear-gradient(180deg,#fff,#fbfdff);
+  padding:10px;border-radius:10px;border:1px solid rgba(16,24,40,0.04);
+  box-shadow: 0 2px 6px rgba(16,24,40,0.04);
+  font-weight:500;color:#0f172a;
+}
+
+/* Left Column Progress */
+.left-progress-container {
+  margin-top: auto;
+  padding-top: 8px;
+}
+
+.left-progress-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 6px;
+}
+
+.left-progress-info small {
+  font-size: 11px;
+  color: var(--muted);
+  background: none;
+  border: none;
+  padding: 0;
+}
+
+.left-progress-info span {
+  font-size: 11px;
+  color: var(--accent);
+  font-weight: 600;
+}
+
+.left-progress {
+  width: 100%;
+  height: 6px;
+  background: rgba(15,23,42,0.08);
+  border-radius: 999px;
+  overflow: hidden;
+  box-shadow: inset 0 1px 2px rgba(0,0,0,0.05);
+}
+
+.left-progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--accent), var(--accent-2));
+  width: 100%;
+  transition: width 0.3s ease;
+  border-radius: 999px;
+}
+
+/* Center */
+.center-column{display:flex;flex-direction:column;gap:12px;min-height:0}
+.file-buttons{display:flex;gap:10px;flex-wrap:wrap}
+.file-btn{background:linear-gradient(180deg,#fff,#f8fbff);border:1px solid rgba(16,24,40,0.04);padding:10px 14px;border-radius:10px;cursor:pointer;box-shadow:0 4px 12px rgba(37,99,235,0.06)}
+.file-btn:hover{transform:translateY(-2px);transition:transform .12s ease}
+
+/* Workspace */
+.workspace{
+  position:relative;background:linear-gradient(180deg,#ffffff,#fbfdff);border-radius:var(--radius);
+  padding:12px;box-shadow:var(--shadow);min-height:420px;overflow:hidden;
+}
+
+/* Global floating windows container */
+.window-container{
+  position:fixed;
+  top:0;
+  left:0;
+  width:100vw;
+  height:100vh;
+  pointer-events:none; /* allow clicks to pass through when no window is present */
+  z-index:1200;
+}
+
+/* Right column */
+.right-column{background:linear-gradient(180deg,#fff,#fbfdff);padding:12px;border-radius:var(--radius);box-shadow:var(--shadow);display:flex;flex-direction:column;gap:10px;min-height:0; height:100%;}
+.tabs{display:flex;gap:6px;align-items:center}
+.tab{background:transparent;border:0;padding:8px 12px;border-radius:8px;cursor:pointer;color:var(--muted);display:flex;align-items:center;gap:8px}
+.tab .icon{font-size:16px}
+.tab .label{font-size:13px}
+.tab.active{background:linear-gradient(90deg,var(--accent),var(--accent-2));color:white;box-shadow:0 6px 18px rgba(37,99,235,0.12)}
+
+.tables-toolbar{display:flex;align-items:center;justify-content:space-between;padding:8px 0}
+.tables-filter{display:flex;align-items:center;gap:8px}
+.tables-filter select{padding:8px;border-radius:8px;border:1px solid rgba(15,23,42,0.06);background:white}
+.tables-filter input[type="search"]{padding:8px 10px;border-radius:8px;border:1px solid rgba(15,23,42,0.06);outline:none;min-width:260px}
+.tables-area{
+  /* ensure the toolbar stays on top and the panels scroll inside the right column */
+  display:flex;
+  flex-direction:column;
+  gap:8px;
+  overflow:hidden;
+  flex:1;
+}
+.data-panel{background:transparent;padding:8px;border-radius:8px;overflow:auto;flex:1}
+.data-panel table{width:100%;border-collapse:collapse}
+.data-panel th, .data-panel td{padding:8px;border-bottom:1px solid rgba(16,24,40,0.04);font-size:13px;text-align:left}
+
+/* Dashboard styles */
+.dashboard-hero{background:linear-gradient(90deg,#123458,#2b82c7);color:white;padding:18px;border-radius:10px;margin-bottom:16px;box-shadow:0 10px 30px rgba(16,24,40,0.08)}
+.dashboard-hero h1{margin:0;font-size:22px}
+.dashboard-hero p{margin:6px 0 0;color:rgba(255,255,255,0.85)}
+.dashboard-cards{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:12px}
+.card.metric{background:white;padding:16px;border-radius:10px;display:flex;align-items:center;gap:12px;box-shadow:0 10px 30px rgba(16,24,40,0.06)}
+.card.metric .card-icon{width:48px;height:48px;border-radius:999px;background:linear-gradient(180deg,rgba(0,0,0,0.03),rgba(0,0,0,0.01));display:flex;align-items:center;justify-content:center;font-size:20px}
+.card.metric .metric-value{font-weight:700;font-size:20px}
+.card.metric .metric-label{color:var(--muted);font-size:13px}
+
+@media (max-width:900px){
+  .dashboard-cards{grid-template-columns:repeat(2,1fr)}
+}
+
+/* Modal overlay and centered window for settings/account */
+.modal-overlay{position:fixed;inset:0;background:rgba(6,10,20,0.5);backdrop-filter:blur(4px);z-index:2000}
+.modal-window{position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);width:760px;max-width:95vw;background:linear-gradient(180deg,#fff,#fbfdff);border-radius:12px;box-shadow:0 30px 80px rgba(2,6,23,0.45);z-index:2100;overflow:hidden}
+.modal-window{position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);width:1000px;height:600px;max-width:95vw;max-height:95vh;background:linear-gradient(180deg,#fff,#fbfdff);border-radius:12px;box-shadow:0 30px 80px rgba(2,6,23,0.45);z-index:2100;overflow:hidden}
+.modal-inner{display:flex;min-height:0;height: calc(100% - 56px); /* leave space for header/footer */}
+.modal-menu{width:220px;background:linear-gradient(180deg,rgba(15,23,42,0.03),transparent);padding:18px;border-right:1px solid rgba(0,0,0,0.04)}
+.modal-menu h3{margin:0 0 12px 0}
+.modal-menu ul{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:8px}
+.modal-menu ul li{padding:8px;border-radius:8px;cursor:pointer}
+.modal-menu ul li.active{background:linear-gradient(90deg,var(--accent),var(--accent-2));color:white}
+.modal-body{flex:1;padding:18px;display:flex;flex-direction:column;gap:12px}
+.modal-section{display:block}
+.modal-section.hidden{display:none}
+.modal-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:8px}
+
+/* Position modal action buttons at bottom-right inside modal-window */
+.modal-window .modal-actions{
+  position: absolute;
+  right: 12px;
+  bottom: 12px;
+  z-index: 2200;
+}
+
+/* Ensure modal body has bottom padding so content doesn't sit under buttons */
+.modal-window .modal-body{padding-bottom:72px}
+
+@media (max-width:820px){
+  .modal-inner{flex-direction:column}
+  .modal-menu{width:100%;border-right:none;border-bottom:1px solid rgba(0,0,0,0.04)}
+}
+
+/* vertical separator between columns */
+.data-panel th:not(:last-child), .data-panel td:not(:last-child){
+  border-right: 1px solid rgba(16,24,40,0.04);
+}
+
+/* Resizable table columns: add a small handle on the right edge of th */
+.data-panel th{position:relative}
+.col-resizer{position:absolute;right:0;top:0;width:8px;height:100%;cursor:col-resize;z-index:2}
+.col-resizer:after{content:'';position:absolute;right:3px;top:12px;height:22px;width:2px;background:rgba(15,23,42,0.06);border-radius:2px}
+
+/* Window (modern) */
+.window{
+  /* Use fixed so windows can move freely across the viewport. JS still sets left/top relative to the viewport. */
+  position:fixed;background:linear-gradient(180deg,#ffffff,#fbfdff);border-radius:12px;border:2px solid #2563eb;
+  box-shadow: 0 20px 60px rgba(16,24,40,0.25), 0 0 0 1px rgba(37,99,235,0.15);overflow:hidden;display:flex;flex-direction:column;min-width:240px;min-height:160px;
+  transition:box-shadow .12s ease, transform .08s ease;
+}
+.window{ pointer-events: all; }
+.window:active{box-shadow: 0 35px 80px rgba(16,24,40,0.35), 0 0 0 2px rgba(37,99,235,0.3)}
+.titlebar{
+  display:flex;align-items:center;justify-content:space-between;padding:6px 8px;background:linear-gradient(135deg,#2563eb,#1e40af);
+  cursor:grab;user-select:none;border-bottom:1px solid rgba(15,23,42,0.1);
+}
+.titlebar .title{font-weight:600;color:white;text-shadow:0 1px 2px rgba(0,0,0,0.1)}
+.titlebar .title{display:flex;align-items:center;gap:8px}
+.titlebar .title .icon{font-size:18px}
+.titlebar .controls{display:flex;gap:8px}
+.win-btn{background:rgba(255,255,255,0.15);border:0;padding:6px;border-radius:6px;cursor:pointer;color:white;font-weight:500}
+.win-btn:hover{background:rgba(255,255,255,0.25);transform:scale(1.05)}
+.content{padding:12px;overflow:auto}
+
+/* Ensure consistent font-size inside floating windows and related modal cards.
+   This makes all 'window' UIs (including the 'Dados Artigos' window and its 'Lotes' tab)
+   use the same base font size and ensures form controls match visually. */
+.window,
+.modal-card,
+.modal-window,
+.login-card,
+.pos-overlay,
+.pos-entry-bar{
+  font-size:14px; /* same as :root font-size for consistency */
+  line-height:1.35;
+}
+
+.window .content,
+.window .artigo-content-area,
+.modal-card .modal-body,
+.modal-window .modal-inner{
+  font-size:14px;
+}
+
+/* Make form controls inside windows/modals inherit the same font size so layouts stay consistent */
+.window input, .window button, .window select, .window textarea,
+.modal-card input, .modal-card button, .modal-card select, .modal-card textarea,
+.modal-window input, .modal-window button, .modal-window select, .modal-window textarea{
+  font-size:14px;
+}
+
+/* Target the artigos window specifically (Dados Artigos -> Lotes tab) if present */
+.window[data-window="dados-artigos"] .artigo-content-area,
+.window[data-window="dados-artigos"] .artigos-toolbar,
+.window[data-window="dados-artigos"] .artigo-info{
+  font-size:14px;
+}
+
+/* Make the Dados Artigo window use the same white sheet background as Clientes/Fornecedores */
+.window[data-window="dados-artigos"] .artigo-content-area {
+  background: transparent !important;
+  padding: 12px !important;
+}
+
+.window[data-window="dados-artigos"] .artigo-content-area > .cf-sheet {
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  padding: 12px;
+  border-radius: 8px;
+  box-shadow: var(--shadow);
+}
+
+/* Ensure the button active state is handled by CSS, not inline styles */
+.cf-btn.dados-subtab-btn.active {
+  background: linear-gradient(90deg,#f8fafc,#eef2ff);
+  border-color: #c7d2fe;
+}
+
+.cf-btn.dados-subtab-btn { margin-right: 6px; }
+
+/* Ensure the cf-sheet inside the artigos window fills the available window area */
+.window[data-window="dados-artigos"] .cf-sheet {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  height: 100%;
+  padding: 12px;
+}
+
+.window[data-window="dados-artigos"] .cf-sheet .cf-buttons{
+  margin-bottom: 12px;
+}
+
+/* Make each subtab content grow to fill the sheet */
+.window[data-window="dados-artigos"] .dados-subtab-content {
+  flex: 1 1 auto;
+  min-height: 260px;
+  display: block;
+}
+
+/* Prevent inner grid from constraining height by default */
+.window[data-window="dados-artigos"] .dados-subtab-content > div {
+  height: 100%;
+}
+
+/* Resizer corner */
+.resizer.corner{position:absolute;right:8px;bottom:8px;width:14px;height:14px;cursor:se-resize;border-radius:3px;background:linear-gradient(135deg, rgba(16,24,40,0.04), transparent)}
+
+/* Bottom bar */
+.bottom-bar{
+  display:flex;align-items:center;gap:12px;padding:12px 18px;padding-bottom: calc(12px + var(--bottombar-gap));background:transparent;border-top:1px solid rgba(16,24,40,0.03)
+}
+.taskbar{display:flex;gap:8px;align-items:center;flex:1;min-height:40px;overflow-x:auto;overflow-y:hidden;scrollbar-width:thin;scrollbar-color:rgba(16,24,40,0.2) transparent}
+
+/* Webkit scrollbar styles for taskbar */
+.taskbar::-webkit-scrollbar {
+  height: 6px;
+}
+
+.taskbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.taskbar::-webkit-scrollbar-thumb {
+  background: rgba(16,24,40,0.2);
+  border-radius: 3px;
+}
+
+.taskbar::-webkit-scrollbar-thumb:hover {
+  background: rgba(16,24,40,0.3);
+}
+
+.taskbar .min-icon{display:flex;align-items:center;gap:8px;background:linear-gradient(180deg,#fff,#f7fbff);padding:8px 12px;border-radius:999px;border:1px solid rgba(16,24,40,0.04);cursor:pointer;box-shadow:0 6px 18px rgba(16,24,40,0.06);white-space:nowrap;flex-shrink:0}
+
+/* Taskbar scroll indicators */
+.bottom-bar {
+  position: relative;
+}
+
+.taskbar-scroll-indicator {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 20px;
+  height: 40px;
+  background: linear-gradient(90deg, rgba(255,255,255,0.9), transparent);
+  pointer-events: none;
+  z-index: 10;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.taskbar-scroll-indicator.left {
+  left: 18px;
+  background: linear-gradient(90deg, rgba(255,255,255,0.9), transparent);
+}
+
+.taskbar-scroll-indicator.right {
+  right: 18px; /* No process area anymore */
+  background: linear-gradient(270deg, rgba(255,255,255,0.9), transparent);
+}
+
+.taskbar-scroll-indicator.visible {
+  opacity: 1;
+}
+
+.taskbar-scroll-indicator::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 0;
+  height: 0;
+}
+
+.taskbar-scroll-indicator.left::after {
+  left: 2px;
+  border-right: 6px solid rgba(16,24,40,0.4);
+  border-top: 4px solid transparent;
+  border-bottom: 4px solid transparent;
+}
+
+.taskbar-scroll-indicator.right::after {
+  right: 2px;
+  border-left: 6px solid rgba(16,24,40,0.4);
+  border-top: 4px solid transparent;
+  border-bottom: 4px solid transparent;
+}
+
+/* Modal */
+.modal{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,0.2);z-index:1400}
+.modal-card{width:880px;max-width:95vw;background:linear-gradient(180deg,#fff,#fbfdff);border-radius:12px;padding:12px;box-shadow:0 20px 60px rgba(2,6,23,0.3);display:flex;flex-direction:column;gap:12px}
+
+/* Settings card specific layout */
+.modal-card.settings-card .settings-layout{display:flex;gap:12px}
+.settings-menu{width:220px;border-right:1px solid rgba(0,0,0,0.06);padding:12px}
+.settings-menu ul{list-style:none;padding:0;margin:0}
+.settings-menu li{padding:10px;border-radius:8px;cursor:pointer}
+.settings-menu li.active{background:linear-gradient(90deg,var(--accent),var(--accent-2));color:white}
+.settings-content{flex:1;padding:12px}
+.settings-header{display:flex;justify-content:space-between;align-items:center}
+.settings-body{padding-top:8px}
+.modal-header{display:flex;align-items:center;justify-content:space-between}
+.modal-body input{width:100%;padding:10px;border-radius:8px;border:1px solid rgba(15,23,42,0.06);outline:none}
+.modal-footer{display:flex;justify-content:flex-end;gap:8px}
+
+/* Nested modal: centered card without page overlay/blur (used for small edit dialogs inside an open modal) */
+.nested-modal{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;z-index:2600;pointer-events:auto;background:rgba(6,10,20,0.08)}
+.nested-modal .modal-card{pointer-events:auto;box-shadow:0 18px 40px rgba(2,6,23,0.35);}
+.nested-modal .modal-overlay{display:none}
+.btn{background:transparent;border:1px solid rgba(16,24,40,0.06);padding:8px 12px;border-radius:8px;cursor:pointer}
+.btn-accent{background:linear-gradient(90deg,var(--accent),var(--accent-2));color:white;border:0;padding:8px 12px;border-radius:8px;cursor:pointer}
+.btn.ghost{background:transparent;border:0}
+
+/* Utility */
+.hidden{display:none}
+
+/* Login screen styles */
+.login-screen{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:#0f1724;z-index:2000;overflow:hidden}
+
+/* animated patterned background layer */
+.login-screen::before{
+  content:'';
+  position:absolute;inset:-20% -20%;
+  background-image: radial-gradient(rgba(255,255,255,0.02) 1px, transparent 1px), radial-gradient(rgba(255,255,255,0.015) 1px, transparent 1px);
+  background-size: 24px 24px, 48px 48px;
+  mix-blend-mode: overlay;
+  opacity:0.9;
+  animation: pattern-move 14s linear infinite, hue 30s linear infinite;
+}
+
+/* subtle dark overlay to dim the page below */
+.login-screen::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,rgba(12,18,30,0.55),rgba(12,18,30,0.6));pointer-events:none}
+
+.login-card{width:360px;background:linear-gradient(180deg,#fff,#fbfdff);padding:18px;border-radius:12px;box-shadow:0 20px 60px rgba(2,6,23,0.4);display:flex;flex-direction:column;gap:10px;z-index:2;transition:transform .22s ease,opacity .18s ease,filter .18s ease}
+.login-card h2{margin:0}
+.login-card input{padding:10px;border-radius:8px;border:1px solid rgba(15,23,42,0.06);outline:none}
+.login-actions{display:flex;justify-content:flex-end}
+.login-error{color:#b91c1c;min-height:18px}
+
+/* fade-out state applied when login succeeds */
+.login-screen.fade-out{opacity:0;transition:opacity .5s ease}
+.login-screen.fade-out::before{opacity:0;transition:opacity .5s ease}
+.login-screen.fade-out::after{opacity:0;transition:opacity .5s ease}
+.login-screen.fade-out .login-card{transform:translateY(-12px) scale(.98);opacity:0;filter:blur(2px)}
+
+@keyframes pattern-move{from{transform:translate3d(0,0,0)}to{transform:translate3d(-24%,12%,0)}}
+@keyframes hue{from{filter:hue-rotate(0deg)}to{filter:hue-rotate(360deg)}}
+
+/* POS Interface Styles */
+#panel-pos {
+  overflow: visible !important;
+  padding: 0 !important;
+  flex: 1 !important;
+  height: 100% !important;
+}
+
+#panel-pos.hidden {
+  display: none !important;
+}
+
+#panel-pos:not(.hidden) {
+  display: flex !important;
+  flex-direction: column !important;
+}
+
+/* POS OVERLAY STYLES */
+.pos-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  /* remove dark overlay: use subtle translucent light background */
+  background: rgba(255,255,255,0.92);
+  z-index: 10000;
+  display: flex;
+  flex-direction: column;
+  /* reserve space at bottom for entry bar so content isn't hidden */
+  padding-bottom: 92px;
+  backdrop-filter: none;
+}
+
+.pos-overlay.hidden {
+  display: none;
+}
+
+.pos-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 20px;
+  /* lighter header to remove black zone */
+  background: linear-gradient(135deg, #f8fafc 0%, #eef2ff 100%);
+  color: #0f172a;
+  box-shadow: 0 2px 12px rgba(2,6,23,0.06);
+  border-bottom: 1px solid rgba(15,23,42,0.04);
+}
+
+.pos-header h1 {
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+.pos-header-buttons {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.pos-settings-btn,
+.pos-close-btn {
+  background: #ffffff;
+  border: 1px solid rgba(15,23,42,0.06);
+  color: #0f172a;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 1.2rem;
+  transition: all 0.2s ease;
+}
+
+.pos-settings-btn:hover,
+.pos-close-btn:hover {
+  background: rgba(15,23,42,0.04);
+  transform: scale(1.03);
+}
+
+/* POS Settings Modal */
+#pos-settings-modal {
+  z-index: 20000 !important; /* Higher than POS overlay (10000) */
+}
+
+#pos-settings-modal .modal-card {
+  max-height: 80vh;
+  overflow-y: auto;
+  width: 90%;
+  max-width: 600px;
+}
+
+#pos-settings-modal .modal-body {
+  max-height: 60vh;
+  overflow-y: auto;
+  padding: 1rem;
+}
+
+.settings-section {
+  margin-bottom: 1rem;
+  padding: 0.8rem;
+  background: #f8f9fa;
+  border-radius: 8px;
+  border-left: 4px solid #007bff;
+}
+
+.settings-section h4 {
+  margin: 0 0 0.8rem 0;
+  color: #2c3e50;
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.settings-section label {
+  display: block;
+  margin-bottom: 0.3rem;
+  font-weight: 500;
+  color: #495057;
+  font-size: 0.9rem;
+}
+
+.settings-section input[type="checkbox"] {
+  margin-right: 0.5rem;
+}
+
+.settings-section input[type="text"],
+.settings-section input[type="number"],
+.settings-section textarea,
+.settings-section select {
+  width: 100%;
+  padding: 0.4rem;
+  border: 1px solid #ced4da;
+  border-radius: 4px;
+  font-size: 0.85rem;
+  margin-bottom: 0.8rem;
+}
+
+.settings-section textarea {
+  height: 50px;
+  resize: vertical;
+}
+
+.modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  padding: 0.8rem 1rem;
+  border-top: 1px solid #dee2e6;
+  background: #f8f9fa;
+  border-radius: 0 0 8px 8px;
+}
+
+.btn-secondary {
+  background: #6c757d;
+  color: white;
+  border: none;
+  padding: 0.4rem 0.8rem;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.85rem;
+  transition: background-color 0.2s;
+}
+
+.btn-secondary:hover {
+  background: #5a6268;
+}
+
+.btn-primary {
+  background: #007bff;
+  color: white;
+  border: none;
+  padding: 0.4rem 0.8rem;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.85rem;
+  transition: background-color 0.2s;
+}
+
+.btn-primary:hover {
+  background: #0056b3;
+}
+
+.pos-interface {
+  display: grid;
+  grid-template-columns: 1fr 320px;
+  gap: 20px;
+  height: calc(100vh - 80px);
+  padding: 20px;
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  overflow: hidden;
+  flex: 1;
+}
+
+/* New POS structure styles */
+.pos-body{
+  display:flex;
+  gap:12px;
+  padding:12px;
+  align-items:flex-start;
+  /* allow the body to size automatically with content */
+  height: auto;
+  flex: 1 1 auto;
+  overflow: auto;
+}
+.pos-left{flex:1;display:flex;flex-direction:column;gap:10px}
+.pos-right{width:260px;display:flex;flex-direction:column;gap:12px}
+
+.pos-client-panel{display:flex;align-items:center;gap:12px;background:#eef6ff;padding:10px;border-radius:6px;border:1px solid rgba(8,23,54,0.04)}
+.pos-client-panel .btn{padding:8px 12px;border-radius:8px;background:linear-gradient(90deg,#2563eb,#4f46e5);color:#fff;border:0;box-shadow:0 6px 18px rgba(79,70,229,0.08)}
+.pos-client-info{display:flex;flex-direction:column}
+.pos-client-name{font-weight:700}
+.pos-client-nif{font-size:13px;color:#475569}
+
+.invoice-list{background:#fff;border:1px solid rgba(8,23,54,0.04);min-height:360px;border-radius:8px;padding:6px;overflow:auto}
+.invoice-list .invoice-row{display:flex;align-items:center;justify-content:space-between;padding:10px 12px;border-bottom:1px solid #f1f5f9}
+.invoice-list .invoice-row:last-child{border-bottom:none}
+.invoice-list .invoice-row .left{display:flex;gap:10px;align-items:center}
+.invoice-list .invoice-row .sku{font-weight:700;color:#0f172a}
+.invoice-list .invoice-row .desc{color:#374151}
+.invoice-list .invoice-row .meta{font-size:13px;color:#6b7280}
+.invoice-empty{color:#6b7280;text-align:center;padding:60px 10px}
+
+.pos-total-card{background:linear-gradient(180deg,#ffffff,#f8fafc);border-radius:12px;padding:14px 12px;text-align:center;border:1px solid rgba(15,23,42,0.04);box-shadow:0 10px 30px rgba(2,6,23,0.04)}
+.pos-total-amount{font-size:30px;font-weight:900;color:#0f172a}
+.pos-total-label{font-size:12px;color:#6b7280;margin-top:6px}
+
+.pos-pay-btn{background:linear-gradient(180deg,#06b6d4,#0ea5e9);color:#063247;padding:14px;border-radius:10px;border:0;font-weight:800;box-shadow:0 14px 36px rgba(14,165,233,0.12);cursor:pointer;width:100%}
+
+.pos-vendedor{background:#fff;padding:8px;border-radius:6px;border:1px solid rgba(8,23,54,0.04)}
+.pos-vendedor select{width:100%;padding:8px;border-radius:6px;border:1px solid #e6eef7}
+
+.pos-right-actions{display:flex;flex-direction:column;gap:10px;margin-top:auto;padding-bottom:6px}
+.pos-action-btn{padding:10px;border-radius:8px;border:0;background:linear-gradient(180deg,#3b82f6,#2563eb);color:#fff;font-weight:700;box-shadow:0 8px 18px rgba(37,99,235,0.08)}
+.pos-action-btn.btn-danger{background:linear-gradient(180deg,#ef4444,#dc2626);box-shadow:0 8px 18px rgba(239,68,68,0.08)}
+
+/* Entry bar at bottom */
+.pos-entry-bar{
+  display:flex;flex-direction:column;gap:8px;padding:14px 18px;align-items:stretch;
+  position:fixed;left:18px;right:18px;bottom:18px;z-index:12000;
+  height:auto;max-width:calc(100% - 36px);margin:0 auto;background:#fff;border-radius:12px;border:1px solid rgba(15,23,42,0.04);
+  box-shadow:0 18px 40px rgba(2,6,23,0.06);
+}
+.pos-entry-left{flex:0 0 260px;display:flex;flex-direction:column}
+.pos-entry-mid{flex:1;display:flex;align-items:center;gap:8px}
+.pos-entry-right{display:flex;align-items:center;gap:8px}
+.pos-entry-input{padding:10px 12px;border-radius:10px;border:1px solid #e6eef7;background:#f8fafc;min-width:160px}
+.pos-entry-small{width:88px;padding:8px;border-radius:10px;border:1px solid #e6eef7;background:#f8fafc;text-align:center}
+.pos-entry-add{padding:10px 16px;border-radius:10px;border:0;background:linear-gradient(90deg,#2563eb,#4f46e5);color:#fff;font-weight:700}
+.pos-entry-actions{display:flex;gap:8px}
+.pos-entry-actions .btn{padding:10px 12px;border-radius:8px}
+
+@media (max-width:900px){
+  .pos-right{width:200px}
+  .pos-entry-left{flex:1}
+}
+
+.pos-main-area {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.pos-search {
+  padding: 1rem 0;
+}
+
+.pos-search-input {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  font-size: 1rem;
+  outline: none;
+  transition: all 0.2s;
+}
+
+.pos-search-input:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+.pos-categories {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+  flex-wrap: wrap;
+}
+
+.pos-category-btn {
+  padding: 0.5rem 1rem;
+  border: 1px solid #d1d5db;
+  background: white;
+  border-radius: 20px;
+  cursor: pointer;
+  font-size: 0.875rem;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+
+.pos-category-btn.active {
+  background: var(--accent);
+  color: white;
+  border-color: var(--accent);
+}
+
+.pos-category-btn:hover:not(.active) {
+  border-color: var(--accent);
+  background: #f3f4f6;
+}
+
+.pos-products-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 1rem;
+  overflow-y: auto;
+  padding-right: 0.5rem;
+  flex: 1;
+}
+
+.pos-product-card {
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 1rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  background: white;
+  height: fit-content;
+}
+
+.pos-product-card:hover {
+  border-color: var(--accent);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.pos-product-name {
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  color: #1f2937;
+  font-size: 0.875rem;
+  line-height: 1.3;
+}
+
+.pos-product-code {
+  font-size: 0.75rem;
+  color: #6b7280;
+  margin-bottom: 0.5rem;
+}
+
+.pos-product-price {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #059669;
+}
+
+.pos-product-stock {
+  font-size: 0.75rem;
+  color: #6b7280;
+  margin-top: 0.25rem;
+}
+
+.pos-cart {
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.pos-cart-header {
+  padding: 1rem;
+  border-bottom: 1px solid #e5e7eb;
+  background: #f9fafb;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.pos-cart-header h3 {
+  margin: 0;
+  font-size: 1.125rem;
+  color: #1f2937;
+}
+
+.pos-cart-count {
+  font-size: 0.875rem;
+  color: #6b7280;
+}
+
+.pos-cart-items {
+  flex: 1;
+  overflow-y: auto;
+  padding: 1rem;
+  min-height: 200px;
+}
+
+.pos-empty-cart {
+  text-align: center;
+  color: #6b7280;
+  padding: 2rem 1rem;
+}
+
+.pos-cart-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  margin-bottom: 0.5rem;
+  background: #f9fafb;
+}
+
+.pos-cart-item-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.pos-cart-item-name {
+  font-weight: 500;
+  color: #1f2937;
+  font-size: 0.875rem;
+  margin-bottom: 0.25rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.pos-cart-item-price {
+  font-size: 0.75rem;
+  color: #6b7280;
+}
+
+.pos-cart-item-controls {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-left: 0.5rem;
+}
+
+.pos-qty-btn {
+  width: 24px;
+  height: 24px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  background: #e5e7eb;
+  color: #374151;
+  font-size: 0.875rem;
+}
+
+.pos-qty-btn:hover {
+  background: #d1d5db;
+}
+
+.pos-qty-display {
+  min-width: 30px;
+  text-align: center;
+  font-weight: 500;
+  font-size: 0.875rem;
+}
+
+.pos-remove-btn {
+  background: #fef2f2;
+  color: #dc2626;
+  border: 1px solid #fecaca;
+}
+
+.pos-remove-btn:hover {
+  background: #fee2e2;
+}
+
+.pos-cart-summary {
+  padding: 1rem;
+  border-top: 1px solid #e5e7eb;
+  background: #f9fafb;
+}
+
+.pos-summary-line {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 0.5rem;
+  font-size: 0.875rem;
+  color: #374151;
+}
+
+.pos-summary-total {
+  display: flex;
+  justify-content: space-between;
+  font-weight: 700;
+  font-size: 1rem;
+  padding-top: 0.5rem;
+  border-top: 1px solid #d1d5db;
+  color: #1f2937;
+}
+
+.pos-checkout {
+  padding: 1rem;
+  border-top: 1px solid #e5e7eb;
+  background: white;
+}
+
+.pos-customer-select {
+  width: 100%;
+  padding: 0.5rem;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  margin-bottom: 1rem;
+  outline: none;
+}
+
+.pos-customer-select:focus {
+  border-color: var(--accent);
+}
+
+.pos-payment-methods {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.pos-payment-btn {
+  padding: 0.75rem 0.5rem;
+  border: 2px solid #e5e7eb;
+  background: white;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-align: center;
+  font-weight: 500;
+  font-size: 0.875rem;
+}
+
+.pos-payment-btn.active {
+  border-color: var(--accent);
+  background: #eff6ff;
+  color: var(--accent);
+}
+
+.pos-payment-btn:hover:not(.active) {
+  border-color: #d1d5db;
+  background: #f9fafb;
+}
+
+.pos-checkout-btn {
+  width: 100%;
+  padding: 1rem;
+  font-size: 1rem;
+  font-weight: 600;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s;
+  background: #10b981;
+  color: white;
+}
+
+.pos-checkout-btn:hover:not(:disabled) {
+  background: #059669;
+}
+
+.pos-checkout-btn:disabled {
+  background: #d1d5db;
+  color: #9ca3af;
+  cursor: not-allowed;
+}
+
+/* POS Responsive */
+@media (max-width: 1200px) {
+  .pos-interface {
+    grid-template-columns: 1fr 300px;
+  }
+  
+  .pos-products-grid {
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  }
+}
+
+@media (max-width: 968px) {
+  .pos-interface {
+    grid-template-columns: 1fr;
+    position: relative;
+  }
+  
+  .pos-cart {
+    position: fixed;
+    top: 64px;
+    right: -350px;
+    height: calc(100vh - 64px);
+    width: 340px;
+    z-index: 100;
+    transition: right 0.3s ease;
+    box-shadow: -2px 0 10px rgba(0,0,0,0.1);
+  }
+  
+  .pos-cart.open {
+    right: 0;
+  }
+  
+  .pos-cart-toggle {
+    position: fixed;
+    top: 80px;
+    right: 10px;
+    z-index: 101;
+    background: var(--accent);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 60px;
+    height: 60px;
+    font-size: 1.5rem;
+    cursor: pointer;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+  }
+
+  .pos-products-grid {
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  }
+
+  .pos-payment-methods {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+  .pos-categories {
+    overflow-x: auto;
+    padding-bottom: 0.5rem;
+  }
+
+  .pos-category-btn {
+    flex-shrink: 0;
+  }
+
+  .pos-products-grid {
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  }
+
+  .pos-cart {
+    width: 100%;
+    right: -100%;
+  }
+}
+
+/* ARTIGOS DESIGN */
+#table-artigos:not(.hidden) {
+  display: block !important;
+}
+
+.artigos-toolbar, .clientes-toolbar {
+  display: flex;
+  gap: 6px;
+  padding: 6px 8px;
+  background: linear-gradient(135deg, #3b82f6, #1e40af);
+  border-radius: 0;
+  flex-wrap: wrap;
+}
+
+.artigo-btn {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 8px;
+  background: rgba(255,255,255,0.15);
+  border: none;
+  border-radius: 4px;
+  color: white;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  min-width: 70px;
+  font-size: 11px;
+}
+
+.artigo-btn:hover {
+  background: rgba(255,255,255,0.25);
+  transform: translateY(-1px);
+}
+
+.artigo-btn .icon {
+  font-size: 12px;
+}
+
+.artigo-btn .label {
+  font-size: 9px;
+  font-weight: 500;
+}
+
+
+
+.artigo-info {
+  display: flex;
+  gap: 12px;
+  padding: 10px 12px;
+  background: #f1f5f9;
+  border-bottom: 2px solid #cbd5e1;
+}
+
+.artigo-ref, .artigo-nome {
+  flex: 1;
+}
+
+.artigo-ref label, .artigo-nome label {
+  display: block;
+  font-size: 10px;
+  font-weight: 600;
+  color: #475569;
+  margin-bottom: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Unified labels for all floating windows - based on artigos labels */
+.window label {
+  display: block;
+  font-size: 10px;
+  font-weight: 600;
+  color: #475569;
+  margin-bottom: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Dark mode override for window labels */
+body.theme-dark .window label {
+  color: #cbd5e0;
+}
+
+/* Unified text input styles for all windows (based on artigos inputs) */
+.window input[type="text"],
+.window input[type="tel"],
+.window input[type="number"],
+.window input[type="email"] {
+  padding: 6px 8px;
+  border: 1px solid #cbd5e1;
+  border-radius: 3px;
+  background: white;
+  font-size: 12px;
+  color: #334155;
+  box-sizing: border-box;
+}
+
+/* Dark mode override for inputs inside windows */
+body.theme-dark .window input[type="text"],
+body.theme-dark .window input[type="tel"],
+body.theme-dark .window input[type="number"],
+body.theme-dark .window input[type="email"]{
+  background: #2d3748;
+  color: #e2e8f0;
+  border: 1px solid rgba(255,255,255,0.06);
+}
+
+.artigo-ref input, .artigo-nome input {
+  width: 100%;
+  padding: 6px 8px;
+  border: 1px solid #cbd5e1;
+  border-radius: 3px;
+  background: white;
+  font-size: 12px;
+  color: #334155;
+}
+
+.artigo-ref input:focus, .artigo-nome input:focus {
+  outline: none;
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+.artigos-menu-tabs {
+  display: flex;
+  gap: 1px;
+  padding: 4px 6px;
+  background: linear-gradient(135deg, #1e40af, #1e3a8a);
+  overflow-x: auto;
+  border-radius: 0;
+}
+
+.artigo-menu-btn {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 6px 10px;
+  background: rgba(255,255,255,0.15);
+  border: none;
+  border-radius: 3px;
+  color: white;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+  flex-shrink: 0;
+  font-size: 10px;
+}
+
+/* Make clientes tabs match artigos menu tabs visually */
+.clientes-tabs {
+  display: flex;
+  gap: 1px;
+  padding: 4px 6px;
+  background: linear-gradient(135deg, #1e40af, #1e3a8a);
+  overflow-x: auto;
+  border-radius: 0;
+}
+.clientes-tabs .artigo-menu-btn{
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0 10px; /* keep horizontal padding, set explicit height below */
+  height: 27px; /* reduced height per request */
+  min-height: 27px;
+  background: rgba(255,255,255,0.15);
+  border: none;
+  border-radius: 3px;
+  color: white;
+  cursor: pointer;
+  transition: all 0.12s ease;
+  white-space: nowrap;
+  font-size: 11px;
+}
+.clientes-tabs .artigo-menu-btn.active{ background: rgba(255,255,255,0.22); box-shadow: inset 0 -2px 0 rgba(0,0,0,0.06) }
+.clientes-tabs .artigo-menu-btn .icon{ font-size:12px }
+.clientes-tabs .artigo-menu-btn .label{ font-size:9px; font-weight:600 }
+
+.artigo-menu-btn:hover {
+  background: rgba(255,255,255,0.25);
+}
+
+.artigo-menu-btn.active {
+  background: rgba(255,255,255,0.3);
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.artigo-menu-btn .icon {
+  font-size: 11px;
+}
+
+.artigo-menu-btn .label {
+  font-size: 9px;
+  font-weight: 500;
+}
+
+.artigo-content-area {
+  padding: 20px;
+  background: #f8fafc;
+  border-radius: 0;
+}
+
+/* Artigos dentro de janelas flutuantes */
+.window .artigos-toolbar, .window .clientes-toolbar,
+.window .artigo-info,
+.window .artigos-menu-tabs,
+.window .artigo-content-area {
+  margin: 0;
+}
+
+.window .content {
+  padding: 0 !important;
+  overflow: hidden;
+  height: 100%;
+}
+
+.window .artigo-content-area {
+  overflow-y: auto;
+}
+
+/* Estilos da página de preços dos artigos */
+.precos-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  padding: 16px;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  margin: 0;
+  height: 100%;
+  min-height: 250px;
+  min-width: 480px;
+}
+
+.precos-left {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 16px;
+  background: #f8fafc;
+  border-radius: 8px;
+  border: 1px solid #e2e8f0;
+  min-width: 200px;
+}
+
+.precos-right {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 16px;
+  background: #f8fafc;
+  border-radius: 8px;
+  border: 1px solid #e2e8f0;
+  min-width: 250px;
+}
+
+.precos-grupo {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.precos-grupo label {
+  font-size: 11px;
+  font-weight: 600;
+  color: #374151;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.precos-grupo input {
+  padding: 8px 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 4px;
+  background: white;
+  font-size: 14px;
+  color: #1f2937;
+  transition: border-color 0.2s ease;
+  max-width: 150px;
+}
+
+.precos-grupo input:focus {
+  outline: none;
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+.precos-grupo input[readonly] {
+  background: #f9fafb;
+  color: #6b7280;
+  cursor: not-allowed;
+}
+
+.preco-venda-linha {
+  display: grid;
+  grid-template-columns: 60px 70px 80px;
+  gap: 6px;
+  align-items: center;
+  padding: 6px;
+  background: white;
+  border-radius: 4px;
+  border: 1px solid #e5e7eb;
+}
+
+.preco-venda-linha label {
+  font-size: 13px;
+  font-weight: 600;
+  color: #374151;
+  text-align: left;
+}
+
+.margem-input, .preco-final-input {
+  padding: 4px 6px;
+  border: 1px solid #d1d5db;
+  border-radius: 3px;
+  background: white;
+  font-size: 12px;
+  color: #1f2937;
+  transition: border-color 0.2s ease;
+  width: 100%;
+  max-width: 65px;
+}
+
+.margem-input:focus {
+  outline: none;
+  border-color: #2563eb;
+  box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.1);
+}
+
+.preco-final-input {
+  background: #f9fafb;
+  color: #059669;
+  font-weight: 600;
+  cursor: not-allowed;
+  max-width: 75px;
+}
+
+/* Responsivo para telas menores */
+@media (max-width: 768px) {
+  .precos-container {
+    grid-template-columns: 1fr;
+    gap: 16px;
+    margin: 8px;
+    padding: 16px;
+  }
+  
+  .preco-venda-linha {
+    grid-template-columns: 1fr;
+    gap: 6px;
+    text-align: left;
+  }
+  
+  .preco-venda-linha label {
+    text-align: left;
+    margin-bottom: 4px;
+  }
+}
+
+/* Custom context menu */
+.custom-context-menu{
+  position:fixed;
+  z-index:35000;
+  min-width:160px;
+  background:#fff;
+  border:1px solid rgba(16,24,40,0.06);
+  box-shadow:0 12px 36px rgba(2,6,23,0.12);
+  border-radius:8px;
+  overflow:hidden;
+  font-size:13px;
+}
+.custom-context-menu ul{list-style:none;margin:0;padding:6px 0}
+.custom-context-menu li{padding:8px 12px;cursor:pointer;color:#0f172a}
+.custom-context-menu li:hover{background:#f3f4f6}
+.custom-context-menu .muted{color:#6b7280;font-size:12px}
+
+/* highlight used by context menu 'select all' action */
+.selected-row{background: linear-gradient(90deg, rgba(59,130,246,0.06), rgba(99,102,241,0.03));}
+
+/* Gráficos */
+.graficos-header{display:flex;align-items:center;justify-content:space-between;padding:8px 12px}
+.graficos-actions{display:flex;gap:8px;align-items:center}
+.graficos-chart-card{background:white;padding:12px;border-radius:8px;border:1px solid #e5e7eb}
+.time-range-modal{position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);z-index:2200;background:white;padding:12px;border-radius:8px;box-shadow:0 20px 60px rgba(2,6,23,0.3);display:none}
+.time-range-modal .ranges{display:flex;gap:8px}
+.time-range-modal button{padding:8px 10px;border-radius:6px;border:1px solid #d1d5db;background:#fff;cursor:pointer}
+.time-range-modal button.active{background:linear-gradient(90deg,var(--accent),var(--accent-2));color:white;border:0}
+
+/* Customizado inputs inside time-range modal */
+.time-range-modal .custom-range{display:flex;flex-direction:row;gap:8px;align-items:center}
+.time-range-modal .custom-range label{font-size:12px;color:#374151}
+.time-range-modal .custom-range input[type="datetime-local"]{padding:6px 8px;border:1px solid #d1d5db;border-radius:6px;font-size:13px}
+.time-range-modal .custom-range .btn-accent{margin-left:8px}
+.time-range-modal{min-width:360px}
+
+/* Clientes / Fornecedores sheet */
+.cf-sheet{background:white;border:1px solid #e5e7eb;padding:12px;border-radius:8px}
+.cf-buttons{display:flex;gap:6px;margin-bottom:12px}
+.cf-btn{background:#fff;border:1px solid #d1d5db;padding:8px 10px;border-radius:6px;cursor:pointer;box-shadow: inset 0 -2px 0 rgba(0,0,0,0.02)}
+.cf-btn.active{background:linear-gradient(90deg,#f8fafc,#eef2ff);border-color:#c7d2fe}
+.cf-tables{overflow:auto}
+.cf-table table{width:100%;border-collapse:collapse;font-size:13px}
+.cf-table th,.cf-table td{padding:8px;border:1px solid #e6eef7;text-align:left}
+.cf-table .hidden{display:none}
+
+/* Scoped input sizing for Clientes window */
+.window[data-window="dados-clientes"] input[type="text"],
+.window[data-window="dados-clientes"] input[type="number"],
+.window[data-window="dados-clientes"] input[type="tel"],
+.window[data-window="dados-clientes"] input[type="date"],
+.window[data-window="dados-clientes"] select {
+  font-size: 11px;
+  padding: 4px;
+  height: 22px;
+  line-height: 22px;
+  box-sizing: border-box;
+}
+
+.window[data-window="dados-clientes"] textarea {
+  font-size: 11px;
+  padding: 6px;
+  box-sizing: border-box;
+}
+
+/* Tighten spacing between small labels and inputs in Clientes window */
+.window[data-window="dados-clientes"] .pos-small-label {
+  text-align: right;
+  margin-right: 6px;
+  font-size: 11px;
+  color: #0f172a;
+}
+
+/* New helper classes for Clientes window to replace inline styles */
+.clientes-root{height:100%;display:flex;flex-direction:column;font-size:11px}
+.clientes-toolbar-actions{display:flex;gap:8px;align-items:center}
+.clientes-info{background:#fff;border-bottom:1px solid #e6eef7;padding:10px 14px;display:flex;align-items:center;gap:12px}
+.clientes-main{display:flex;flex:1;gap:12px;padding:14px;background:#f1f5f9;box-sizing:border-box;overflow:auto;font-size:11px}
+
+/* Clientes window: overall chrome and header */
+.window[data-window="dados-clientes"]{ --clientes-accent:#1e62d0; border-radius:10px; overflow:hidden; box-shadow: 0 8px 26px rgba(20,36,63,0.12); border: 2px solid #2563eb; }
+.window[data-window="dados-clientes"] .titlebar{ background: linear-gradient(90deg,var(--clientes-accent),#174fb0); color: #fff; border-bottom: 1px solid rgba(0,0,0,0.06); padding:10px 12px; height:44px; box-sizing:border-box }
+.window[data-window="dados-clientes"] .titlebar .title{ font-weight:700; letter-spacing:0.6px; font-size:13px }
+
+/* Titlebar embedded toolbar for Clientes */
+.window[data-window="dados-clientes"] .titlebar .title{ display:flex; align-items:center; gap:10px }
+.window[data-window="dados-clientes"] .titlebar .clientes-title-toolbar{ display:flex; gap:8px; align-items:center }
+.window[data-window="dados-clientes"] .titlebar .clientes-title-toolbar .artigo-btn{ background: linear-gradient(180deg,#4f8ffb,#2b6be6); color:#fff; border:1px solid rgba(0,0,0,0.08); padding:6px 10px; border-radius:6px; display:inline-flex; gap:8px; align-items:center; box-shadow: 0 2px 0 rgba(0,0,0,0.06); font-weight:600; font-size:12px }
+.window[data-window="dados-clientes"] .titlebar .clientes-title-toolbar .artigo-btn .icon{ font-size:14px }
+.window[data-window="dados-clientes"] .titlebar .title-text{ font-weight:700; color:#fff; margin-left:6px }
+.window[data-window="dados-clientes"] .titlebar .clientes-title-toolbar .artigo-btn:hover{ transform: translateY(-1px) }
+
+/* Top action toolbar inside clientes window (buttons like Criar, Procurar...) */
+/* toolbar sits visually inside the blue header bar */
+.window[data-window="dados-clientes"] .content{ padding:0; background:transparent }
+.window[data-window="dados-clientes"] .clientes-toolbar{ display:flex; gap:8px; align-items:center; padding:6px 8px; background: linear-gradient(135deg, #3b82f6, #1e40af); border-radius:0; margin:0 }
+.window[data-window="dados-clientes"] .clientes-toolbar .artigo-btn{
+  /* match artigos toolbar button look: translucent white on blue */
+  background: rgba(255,255,255,0.15);
+  color: #fff;
+  border: none;
+  padding: 0 8px;
+  height: 24px;
+  min-height: 24px;
+  border-radius: 4px;
+  display: inline-flex;
+  gap: 8px;
+  align-items: center;
+  justify-content: center;
+  box-shadow: none;
+  font-weight: 600;
+  font-size: 11px;
+}
+.window[data-window="dados-clientes"] .clientes-toolbar .artigo-btn .icon{ font-size:13px }
+.window[data-window="dados-clientes"] .clientes-toolbar .artigo-btn:hover{ transform: translateY(-1px) }
+
+/* Top quick fields row (Nº CLIENTE, NOME, DATA) - mimic artigo-info styles */
+.window[data-window="dados-clientes"] .clientes-top-row{
+  display:flex;
+  gap:12px;
+  align-items:center;
+  padding:10px 12px;
+  background: #f1f5f9; /* same as .artigo-info */
+  border-bottom: 2px solid #cbd5e1; /* match artigos separator */
+}
+.window[data-window="dados-clientes"] .clientes-top-row .field{
+  flex:1;
+  display:flex;
+  flex-direction:column;
+  gap:6px;
+}
+.window[data-window="dados-clientes"] .clientes-top-row .field-inline{
+  display:flex;
+  flex-direction:column; /* label above input, like .artigo-ref */
+  align-items:flex-start;
+  gap:4px; /* small gap between label and input */
+  flex: 0 0 auto; /* don't stretch, keep left-aligned */
+}
+.window[data-window="dados-clientes"] .clientes-top-row .field-inline .clientes-label{
+  display:block;
+  font-size:10px;
+  font-weight:600;
+  color:#334155;
+  margin-bottom:4px;
+  text-transform:uppercase;
+  letter-spacing:0.5px;
+}
+.window[data-window="dados-clientes"] .client-name-field{ flex:1; display:flex; flex-direction:column }
+.window[data-window="dados-clientes"] .clientes-top-row .clientes-label{
+  display:block;
+  font-size:10px;
+  font-weight:600;
+  color:#334155;
+  margin-bottom:4px;
+  text-transform:uppercase;
+  letter-spacing:0.5px;
+}
+.window[data-window="dados-clientes"] .clientes-top-row .clientes-input{
+  width:100%;
+  padding:6px 8px;
+  border:1px solid #cbd5e1;
+  border-radius:3px;
+  background:white;
+  font-size:12px;
+  color:#334155;
+  box-sizing:border-box;
+}
+.window[data-window="dados-clientes"] .clientes-top-row .field-inline .clientes-input.small{ width:110px }
+.window[data-window="dados-clientes"] .clientes-top-row .client-name{ flex:1 }
+
+/* small helpers replaced inline styles -> classes */
+.window[data-window="dados-clientes"] .clientes-root{ height:100%; display:flex; flex-direction:column }
+.window[data-window="dados-clientes"] .clientes-top-row .field-inline{ display:flex; flex-direction:column; align-items:flex-start; gap:4px }
+.window[data-window="dados-clientes"] .field-right{ text-align:right }
+.window[data-window="dados-clientes"] .date-field{ width:180px }
+
+.window[data-window="dados-clientes"] .clientes-label{ font-weight:700; font-size:11px; letter-spacing:0.5px; text-transform:uppercase; color:#0f172a; display:block; margin-bottom:4px }
+.window[data-window="dados-clientes"] .clientes-input{ border:1px solid #d1d5db; border-radius:6px; background:white; font-size:11px; box-sizing:border-box }
+.window[data-window="dados-clientes"] .clientes-input.small{ width:110px }
+.window[data-window="dados-clientes"] .clientes-input.full{ width:100% }
+
+/* form grid helpers */
+.window[data-window="dados-clientes"] .clientes-form-card{ background:#fff; border:1px solid #e2e8f0; border-radius:8px; padding:12px }
+.window[data-window="dados-clientes"] .clientes-form-card label{
+  text-transform:capitalize; /* only first letter of each word capitalized */
+  font-weight:600; /* remove bold */
+  font-size:11px;
+  color:#334155;
+  margin-bottom:6px;
+}
+.window[data-window="dados-clientes"] .clientes-form-grid{ display:grid; grid-template-columns:120px 1fr 120px 1fr; gap:10px 14px; align-items:center }
+.window[data-window="dados-clientes"] .clientes-form-grid .span-3{ grid-column:2 / span 3 }
+
+/* aside */
+.window[data-window="dados-clientes"] .clientes-aside{ width:340px; display:flex; flex-direction:column; gap:12px; min-width:260px }
+.window[data-window="dados-clientes"] .clientes-aside-card{ background:white; border:1px solid #e2e8f0; padding:12px; border-radius:8px }
+.window[data-window="dados-clientes"] .aside-header{ display:flex; justify-content:space-between; align-items:center; margin-bottom:6px }
+.window[data-window="dados-clientes"] .aside-title{ font-weight:700; color:#0f172a }
+.window[data-window="dados-clientes"] .aside-actions{ display:flex; gap:6px }
+.window[data-window="dados-clientes"] .contact-list{ height:90px; border:1px dashed #e6eef7; border-radius:6px; display:flex; align-items:center; justify-content:center; color:#94a3b8 }
+.window[data-window="dados-clientes"] .aside-grid{ display:grid; grid-template-columns:1fr 60px; gap:6px 10px; align-items:center; font-size:13px; color:#0f172a }
+.window[data-window="dados-clientes"] .aside-value{ text-align:right }
+.window[data-window="dados-clientes"] .aside-actions-row{ display:flex; justify-content:flex-end; margin-top:8px }
+
+/* footer */
+.window[data-window="dados-clientes"] .clientes-footer{ display:flex; justify-content:flex-end; gap:8px; padding:12px; border-top:1px solid #e6eef7; background:#fafafa }
+
+/* Tabs under top row */
+.window[data-window="dados-clientes"] .clientes-tabs{ display:flex; gap:6px; padding:4px 6px; background: linear-gradient(90deg,var(--clientes-accent),#174fb0)}
+.window[data-window="dados-clientes"] .clientes-tabs button{ background:transparent; color:#fff; border:0; padding:0 10px; height:27px; min-height:27px; border-radius:6px; cursor:pointer; font-weight:600; display:inline-flex; align-items:center; gap:8px }
+.window[data-window="dados-clientes"] .clientes-tabs button.active{ background: rgba(255,255,255,0.14); box-shadow: inset 0 -2px 0 rgba(0,0,0,0.06); color:#fff }
+.window[data-window="dados-clientes"] .clientes-tabs button .label{ font-size:9px }
+
+/* Main area: left form and right aside */
+.window[data-window="dados-clientes"] .clientes-main { display:flex; gap:18px; }
+.window[data-window="dados-clientes"] .clientes-form { flex:1; }
+.window[data-window="dados-clientes"] .clientes-aside { width:320px; display:flex; flex-direction:column; gap:12px }
+
+/* Form rows: two-column grid */
+.window[data-window="dados-clientes"] .clientes-form .form-grid{ display:grid; grid-template-columns: 160px 1fr 160px 1fr; gap:10px 14px; align-items:center }
+.window[data-window="dados-clientes"] .clientes-form .form-grid label{ font-size:11px; color:#334155; text-transform:capitalize; font-weight:400 }
+.window[data-window="dados-clientes"] .clientes-form .form-grid input{ height:28px; padding:6px 8px; border-radius:6px; border:1px solid #e2e8f0; background:white }
+
+/* Right side cards */
+.window[data-window="dados-clientes"] .clientes-aside .card{ background:#fff; border:1px solid #e6eef7; border-radius:8px; padding:12px }
+
+/* Small tweaks to match the screenshot feel */
+.window[data-window="dados-clientes"] .clientes-info{ display:none }
+.window[data-window="dados-clientes"] .clientes-info .btn{ background: rgba(255,255,255,0.12); color:#fff }
+.clientes-form-card{background:#fff;border:1px solid #e6eef7;border-radius:8px;padding:12px}
+.clientes-form-grid{display:grid;grid-template-columns:100px 1fr 100px 1fr;gap:6px 8px;align-items:center;font-size:11px}
+.clientes-aside{width:340px;display:flex;flex-direction:column;gap:12px;min-width:260px}
+.clientes-aside-card{background:white;border:1px solid #e2e8f0;padding:12px;border-radius:8px}
+.clientes-process{display:flex;justify-content:flex-end;margin-top:10px}
+
+/* Diminuir o tamanho das letras nas abas Clientes/Fornecedores e Preços */
+.cf-sheet,
+.precos-container {
+  font-size: 11px; /* reduzido para caber mais informação */
+}
+
+.cf-sheet input, .cf-sheet select, .cf-sheet button, .cf-sheet textarea,
+.precos-container input, .precos-container select, .precos-container button, .precos-container textarea {
+  font-size: 11px;
+}
+
+/* Ajuste fino para elementos que tinham tamanho maior explicitamente */
+.precos-grupo input, .margem-input, .preco-final-input, .preco-venda-linha label {
+  font-size: 11px;
+}
+
+/* Procura de Artigo window styles */
+.procura-toolbar{background:linear-gradient(90deg,#f8fafc,#eef2ff);border-bottom:1px solid #e6eef7}
+.procura-card{
+  background: linear-gradient(180deg, #ffffff, #fbfdff);
+  border-radius:10px;
+  padding:12px;
+  box-shadow: 0 6px 18px rgba(20,36,63,0.08);
+  width:100%;
+}
+
+.procura-input{
+  width:100%;
+  padding:10px 12px;
+  border-radius:8px;
+  border:1px solid #e6eef7;
+  background:#fff;
+  font-size:13px;
+  box-shadow: inset 0 1px 0 rgba(16,24,40,0.02);
+  transition: box-shadow .12s ease, border-color .12s ease;
+}
+.procura-input:focus{
+  outline: none;
+  border-color: #68a0ff;
+  box-shadow: 0 4px 18px rgba(104,160,255,0.12);
+}
+
+.procura-search-wrapper{
+  position:relative;
+}
+.procura-search-icon{
+  position:absolute;
+  right:10px;
+  top:50%;
+  transform:translateY(-50%);
+  color:#6b7280;
+  font-size:14px;
+  pointer-events:none;
+}
+
+.procura-btn{
+  padding:8px 10px;
+  border-radius:8px;
+  background:transparent;
+  border:1px solid transparent;
+  color:#0f172a;
+  cursor:pointer;
+  font-size:13px;
+}
+.procura-btn:hover{
+  background:rgba(15,23,42,0.04);
+}
+.procura-btn.btn-accent{
+  background:linear-gradient(90deg,#2563eb,#4f46e5);
+  color:#fff;
+  border: none;
+  box-shadow: 0 6px 16px rgba(79,70,229,0.12);
+}
+
+.procura-table-card{
+  background:#fff;
+  border-radius:8px;
+  padding:8px;
+  box-shadow: 0 6px 18px rgba(8,23,54,0.04);
+}
+
+#procura-articles-table thead th{
+  text-align:left;
+  padding:10px 12px;
+  font-weight:600;
+  color:#0f172a;
+  font-size:13px;
+  border-bottom:1px solid #eef2ff;
+}
+
+#procura-articles-table tbody td{
+  padding:10px 12px;
+  font-size:13px;
+  color:#111827;
+  border-bottom:1px solid #f3f4f6;
+}
+
+#procura-articles-table tbody tr:nth-child(odd){
+  background: linear-gradient(180deg, rgba(246,250,255,0.6), rgba(255,255,255,0));
+}
+#procura-articles-table tbody tr:hover{
+  background: linear-gradient(90deg, rgba(240,249,255,0.9), rgba(255,255,255,0.95));
+  transform: translateY(-1px);
+}
+
+/* small responsive tweaks */
+@media (max-width:800px){
+  .procura-card{ padding:10px; }
+  .procura-btn{ padding:6px 8px; }
+}
+
+/* Theme swatches in Settings */
+.theme-swatch{
+  width:28px;
+  height:28px;
+  border-radius:6px;
+  border:2px solid rgba(0,0,0,0.06);
+  cursor:pointer;
+  padding:0;
+  box-sizing:border-box;
+  outline:none;
+}
+.theme-swatch[data-color="blue"]{background:#2563eb}
+.theme-swatch[data-color="green"]{background:#16a34a}
+.theme-swatch[data-color="red"]{background:#ef4444}
+.theme-swatch[data-color="yellow"]{background:#f59e0b}
+.theme-swatch[data-color="orange"]{background:#f97316}
+.theme-swatch[data-color="purple"]{background:#7c3aed}
+.theme-swatch[data-color="pink"]{background:#ec4899}
+.theme-swatch.active{box-shadow:0 6px 14px rgba(0,0,0,0.12);transform:translateY(-2px);border-color:rgba(0,0,0,0.12)}
+
+/* Dark mode support: toggle base background and panels */
+body.theme-dark{
+  --bg: #0f1724;
+  --panel: #1a202c;
+  color: #e2e8f0;
+  background: linear-gradient(180deg,#0f1724 0%, #1a202c 100%);
+}
+body.theme-dark .left-column,
+body.theme-dark .right-column,
+body.theme-dark .workspace,
+body.theme-dark .window{
+  background: linear-gradient(180deg,#1a202c,#2d3748);
+  color: #e2e8f0;
+}
+body.theme-dark .titlebar{ background: linear-gradient(135deg,#2b6cb8,#1e4074) !important }
+body.theme-dark .artigo-info { background: rgba(255,255,255,0.02); border-bottom-color: rgba(255,255,255,0.03); }
+body.theme-dark .btn-accent{ box-shadow: none }
+
+/* Expanded dark-mode overrides for more UI elements */
+body.theme-dark{
+  /* ensure the root vars can be used by other selectors */
+  --bg: #0f1724;
+  --panel: #1a202c;
+  --surface: #1a202c;
+  --muted: #a0aec0;
+  --border-2: rgba(255,255,255,0.06);
+}
+
+body.theme-dark .topbar{
+  background: linear-gradient(180deg, rgba(15,23,36,0.8), rgba(26,32,44,0.75));
+  border-bottom-color: rgba(255,255,255,0.05);
+}
+body.theme-dark .logo{ box-shadow:none }
+
+/* modal overlays should be darker in dark mode */
+body.theme-dark .modal-overlay{ background: rgba(0,0,0,0.75); }
+body.theme-dark .modal-window,
+body.theme-dark .modal-card,
+body.theme-dark .window,
+body.theme-dark .pos-overlay,
+body.theme-dark .login-card{
+  background: linear-gradient(180deg,#1a202c,#2d3748);
+  color: #e2e8f0;
+  border-color: rgba(255,255,255,0.05);
+  box-shadow: 0 30px 80px rgba(0,0,0,0.7);
+}
+
+body.theme-dark .modal-menu{ background: linear-gradient(180deg, rgba(255,255,255,0.03), transparent); border-right-color: rgba(255,255,255,0.04); }
+body.theme-dark .modal-menu h3, body.theme-dark .modal-menu ul li{ color: #e2e8f0 }
+body.theme-dark .modal-menu ul li.active{ background: linear-gradient(90deg,var(--accent),var(--accent-2)); color: #fff }
+
+/* Inputs, selects, textareas in dark mode */
+/* Force dark backgrounds for inputs even when inline styles set white */
+body.theme-dark input, body.theme-dark textarea, body.theme-dark select, body.theme-dark .procura-input, body.theme-dark .pos-search-input, body.theme-dark .modal-body input{
+  background: #2d3748 !important;
+  color: #e2e8f0 !important;
+  border: 1px solid rgba(255,255,255,0.06) !important;
+}
+body.theme-dark input::placeholder, body.theme-dark textarea::placeholder{ color: rgba(226,232,240,0.5) !important }
+
+/* Also target inputs inside windows and modal cards specifically (higher specificity) */
+body.theme-dark .window input, body.theme-dark .window textarea, body.theme-dark .window select,
+body.theme-dark .modal-window input, body.theme-dark .modal-window textarea, body.theme-dark .modal-window select{
+  background: #2d3748 !important;
+  color: #e2e8f0 !important;
+  border-color: rgba(255,255,255,0.06) !important;
+}
+body.theme-dark input:focus, body.theme-dark textarea:focus, body.theme-dark select:focus{ box-shadow: 0 0 0 4px rgba(37,99,235,0.08); border-color: var(--accent) }
+
+/* Buttons */
+body.theme-dark .btn{ border-color: rgba(255,255,255,0.05); color: #e2e8f0; background: transparent }
+body.theme-dark .btn-accent{ background: linear-gradient(90deg,var(--accent),var(--accent-2)); color:#fff }
+body.theme-dark .icon-btn{ color: #cbd5e0 }
+
+/* File buttons / taskbar */
+body.theme-dark .file-btn, body.theme-dark .file-buttons .file-btn{ background: linear-gradient(180deg,#2d3748,#4a5568); border:1px solid rgba(255,255,255,0.04); color:#e2e8f0 }
+body.theme-dark .taskbar .min-icon{ background: linear-gradient(180deg,#2d3748,#4a5568); border:1px solid rgba(255,255,255,0.05); color:#e2e8f0; box-shadow:none }
+
+/* Tables and panels */
+body.theme-dark .data-panel th, body.theme-dark .data-panel td, body.theme-dark .cf-table th, body.theme-dark .cf-table td, body.theme-dark #procura-articles-table tbody td{
+  border-bottom-color: rgba(255,255,255,0.05);
+  color: #e2e8f0;
+}
+body.theme-dark table{ background: transparent }
+body.theme-dark .data-panel{ background: transparent }
+
+/* Context menu */
+body.theme-dark .custom-context-menu{ background: #2d3748; border-color: rgba(255,255,255,0.05); color: #e2e8f0; box-shadow: 0 12px 36px rgba(0,0,0,0.7) }
+body.theme-dark .custom-context-menu li:hover{ background: rgba(255,255,255,0.04) }
+
+/* Window chrome tweaks */
+body.theme-dark .window{ border-color: rgba(37,99,235,0.15); box-shadow: 0 30px 80px rgba(0,0,0,0.7) }
+body.theme-dark .titlebar{ background: linear-gradient(135deg,#2b6cb8,#1e4074) }
+body.theme-dark .titlebar .title{ color: #e2e8f0 }
+body.theme-dark .win-btn{ background: rgba(255,255,255,0.05); color:#e2e8f0 }
+
+/* Artigos toolbar/buttons */
+body.theme-dark .artigos-toolbar, body.theme-dark .clientes-toolbar, body.theme-dark .artigo-menu-btn, body.theme-dark .artigo-btn{ background: rgba(255,255,255,0.06); color:#e2e8f0 }
+body.theme-dark .artigo-btn:hover, body.theme-dark .artigo-menu-btn:hover{ background: rgba(255,255,255,0.08) }
+body.theme-dark .artigo-info{ background: rgba(255,255,255,0.03); border-bottom-color: rgba(255,255,255,0.05); }
+
+/* Procura / sheets */
+body.theme-dark .procura-card, body.theme-dark .procura-table-card, body.theme-dark .cf-sheet, body.theme-dark .precos-container{ background: linear-gradient(180deg,#1a202c,#2d3748); border-color: rgba(255,255,255,0.05); color:#e2e8f0 }
+
+/* POS components */
+body.theme-dark .pos-overlay{ background: linear-gradient(180deg, rgba(15,23,36,0.8), rgba(26,32,44,0.85)); }
+body.theme-dark .pos-product-card, body.theme-dark .invoice-list, body.theme-dark .pos-cart, body.theme-dark .pos-total-card{ background: linear-gradient(180deg,#1a202c,#2d3748); border-color: rgba(255,255,255,0.05); color:#e2e8f0 }
+body.theme-dark .pos-category-btn{ background: transparent; border-color: rgba(255,255,255,0.06); color:#cbd5e0 }
+body.theme-dark .pos-category-btn.active{ background: var(--accent); color: #fff }
+
+/* Theme swatch visibility in dark mode */
+body.theme-dark .theme-swatch{ border-color: rgba(255,255,255,0.06) }
+body.theme-dark .theme-swatch.active{ box-shadow: 0 10px 30px rgba(0,0,0,0.6); border-color: rgba(255,255,255,0.12); transform: translateY(-2px) }
+
+/* Scrollbars for dark mode */
+body.theme-dark ::-webkit-scrollbar-thumb{ background: rgba(255,255,255,0.06) }
+body.theme-dark ::-webkit-scrollbar-track{ background: rgba(0,0,0,0.02) }
+
+/* Small adjustments for time-range modal and other popups */
+body.theme-dark .time-range-modal, body.theme-dark .modal-card.settings-card .settings-section{ background: linear-gradient(180deg,#071a2b,#041421); border-color: rgba(255,255,255,0.03); color:#e6eef6 }
+
+/* Ensure alerts/toasts contrast in dark mode */
+.toast{ color:#fff }
+body.theme-dark .toast{ background: rgba(0,0,0,0.6) }
+
+/* Make buttons pop more in dark mode: stronger accents, subtle elevation and clearer hover states */
+body.theme-dark .btn{
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.08);
+  color: #e2e8f0;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.5);
+  transition: transform .12s ease, box-shadow .12s ease, background .12s ease;
+}
+body.theme-dark .btn:hover{
+  transform: translateY(-3px);
+  background: rgba(255,255,255,0.065);
+  box-shadow: 0 10px 28px rgba(0,0,0,0.6);
+}
+
+/* Accent buttons: brighter gradient and stronger glow */
+body.theme-dark .btn-accent{
+  background: linear-gradient(90deg,var(--accent),var(--accent-2));
+  color: #fff;
+  border: 0;
+  box-shadow: 0 10px 40px rgba(37,99,235,0.14);
+}
+body.theme-dark .btn-accent:hover{
+  transform: translateY(-3px);
+  box-shadow: 0 16px 56px rgba(37,99,235,0.2);
+}
+
+/* Topbar/file buttons should feel clickable */
+body.theme-dark .file-btn{
+  background: linear-gradient(180deg, rgba(37,99,235,0.15), rgba(37,99,235,0.08));
+  border: 1px solid rgba(37,99,235,0.15);
+  color: #e2e8f0;
+  box-shadow: 0 8px 24px rgba(37,99,235,0.08);
+}
+body.theme-dark .file-btn:hover{ transform: translateY(-3px); box-shadow: 0 14px 36px rgba(37,99,235,0.15); }
+
+/* Article toolbar buttons */
+body.theme-dark .artigo-btn{
+  background: linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.055));
+  border: 1px solid rgba(255,255,255,0.06);
+  color: #e2e8f0;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.5);
+}
+body.theme-dark .artigo-btn:hover{ transform: translateY(-2px); background: rgba(255,255,255,0.07); }
+
+/* POS action buttons (pay/add) */
+body.theme-dark .pos-action-btn, body.theme-dark .pos-entry-add, body.theme-dark .pos-pay-btn{
+  transform: translateZ(0);
+  box-shadow: 0 14px 36px rgba(0,0,0,0.6);
+}
+body.theme-dark .pos-pay-btn{
+  box-shadow: 0 18px 46px rgba(14,165,233,0.18);
+}
+
+/* cf-sheet buttons */
+body.theme-dark .cf-btn{ background: rgba(255,255,255,0.02); border:1px solid rgba(255,255,255,0.03); color:#e6eef6 }
+body.theme-dark .cf-btn.active{ background: linear-gradient(90deg, rgba(255,255,255,0.03), rgba(255,255,255,0.05)); box-shadow: 0 8px 24px rgba(0,0,0,0.5) }
+
+/* Ensure small buttons like theme-swatch remain visible */
+body.theme-dark .theme-swatch{ box-shadow: 0 6px 14px rgba(0,0,0,0.5); }
+
+/* Fix remaining dark-text-on-dark issues by brightening common text containers */
+body.theme-dark .invoice-list .invoice-row .sku,
+body.theme-dark .invoice-list .invoice-row .desc,
+body.theme-dark .invoice-list .invoice-row .meta,
+body.theme-dark .invoice-empty,
+body.theme-dark .pos-total-amount,
+body.theme-dark .pos-total-label,
+body.theme-dark .pos-pay-btn,
+body.theme-dark .card.metric .metric-value,
+body.theme-dark .card.metric .metric-label,
+body.theme-dark .dashboard-hero h1,
+body.theme-dark .dashboard-hero p,
+body.theme-dark .left-column .tools-list li,
+body.theme-dark .modal-body h4,
+body.theme-dark .modal-menu h3,
+body.theme-dark .modal-menu ul li,
+body.theme-dark .tab,
+body.theme-dark .tab .label,
+body.theme-dark .file-btn .label,
+body.theme-dark .settings-section h4,
+body.theme-dark .settings-section label,
+body.theme-dark .procura-card,
+body.theme-dark .procura-table-card,
+body.theme-dark .cf-table td,
+body.theme-dark .cf-table th,
+body.theme-dark .data-panel td,
+body.theme-dark .data-panel th,
+body.theme-dark .modal-window,
+body.theme-dark .modal-card,
+body.theme-dark .window{
+  color: #e2e8f0 !important;
+}
+
+/* Small exceptions: keep numeric badges / accents using accent color but ensure contrast */
+body.theme-dark .badge, body.theme-dark .count-badge { color: #fff !important; background: var(--accent) !important }
+
+/* Ensure default text in dark mode is always readable (fix cases where text equals bg until selected) */
+body.theme-dark,
+body.theme-dark .window,
+body.theme-dark .modal-window,
+body.theme-dark .modal-card,
+body.theme-dark .data-panel,
+body.theme-dark .cf-sheet,
+body.theme-dark .procura-card,
+body.theme-dark .procura-table-card,
+body.theme-dark .artigo-content-area{
+  color: #e2e8f0 !important;
+}
+
+/* Make selected text clearly visible */
+body.theme-dark ::selection{ background: rgba(37,99,235,0.5); color: #fff }
+body.theme-dark ::-moz-selection{ background: rgba(37,99,235,0.5); color: #fff }
+
+/* Clientes window specific dark-mode tweaks */
+body.theme-dark .window[data-window="dados-clientes"]{
+  background: linear-gradient(180deg,#1a202c,#2d3748);
+  border-color: rgba(37,99,235,0.15);
+  color: #e2e8f0;
+}
+
+body.theme-dark .window[data-window="dados-clientes"] .titlebar{
+  background: linear-gradient(135deg,#1e4074,#2b6cb8);
+}
+
+body.theme-dark .window[data-window="dados-clientes"] .clientes-info,
+body.theme-dark .window[data-window="dados-clientes"] .clientes-form-card,
+body.theme-dark .window[data-window="dados-clientes"] .clientes-aside-card{
+  background: linear-gradient(180deg,#2d3748,#4a5568);
+  border: 1px solid rgba(255,255,255,0.05);
+  color: #e2e8f0;
+  box-shadow: 0 8px 28px rgba(0,0,0,0.6);
+}
+
+body.theme-dark .window[data-window="dados-clientes"] .clientes-main{ background: transparent }
+
+body.theme-dark .window[data-window="dados-clientes"] label,
+body.theme-dark .window[data-window="dados-clientes"] .pos-small-label{
+  color: #cbd5e0;
+}
+
+body.theme-dark .window[data-window="dados-clientes"] input,
+body.theme-dark .window[data-window="dados-clientes"] select,
+body.theme-dark .window[data-window="dados-clientes"] textarea{
+  background: #2d3748; color: #e2e8f0; border: 1px solid rgba(255,255,255,0.06);
+}
+
+/* Ensure inputs in clientes window in dark mode follow compact sizing too */
+body.theme-dark .window[data-window="dados-clientes"] input,
+body.theme-dark .window[data-window="dados-clientes"] select{
+  font-size:11px; padding:4px; height:22px; line-height:22px; box-sizing:border-box;
+}
+
+body.theme-dark .window[data-window="dados-clientes"] .clientes-aside-card{ padding:12px }
+
+/* Clientes toolbar buttons: make them pop */
+body.theme-dark .window[data-window="dados-clientes"] .clientes-toolbar-actions .btn,
+body.theme-dark .window[data-window="dados-clientes"] .clientes-toolbar-actions .artigo-btn{
+  background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.035));
+  color:#e6eef6; border:1px solid rgba(255,255,255,0.04); box-shadow:0 8px 24px rgba(0,0,0,0.5)
+}
+
+body.theme-dark .window[data-window="dados-clientes"] .clientes-toolbar-actions .btn:hover,
+body.theme-dark .window[data-window="dados-clientes"] .clientes-toolbar-actions .artigo-btn:hover{
+  transform: translateY(-3px); background: rgba(255,255,255,0.05); box-shadow:0 14px 36px rgba(0,0,0,0.6)
+}
+
+/* Info card small button (Processar) visibility */
+body.theme-dark .window[data-window="dados-clientes"] .clientes-aside-card .btn{
+  background: linear-gradient(90deg, rgba(37,99,235,0.14), rgba(79,70,229,0.12)); color:#fff; box-shadow:0 12px 36px rgba(37,99,235,0.12)
+}
+
+/* Ensure tabs inside Clientes follow dark style */
+body.theme-dark .window[data-window="dados-clientes"] .artigos-menu-tabs,
+body.theme-dark .window[data-window="dados-clientes"] .cf-buttons{
+  background: linear-gradient(180deg,#041421,#051827);
+}
+
+body.theme-dark .window[data-window="dados-clientes"] .artigo-menu-btn,
+body.theme-dark .window[data-window="dados-clientes"] .cf-btn{
+  color:#d6eafc; background: rgba(255,255,255,0.02); border:1px solid rgba(255,255,255,0.03)
+}
+
+
+/* Additional dark-mode fixes for components that used explicit light backgrounds */
+body.theme-dark .dashboard-hero{
+  background: linear-gradient(90deg,#1e4074,#2b6cb8);
+  color: #e2e8f0;
+  box-shadow: none;
+  border: 1px solid rgba(255,255,255,0.04);
+}
+body.theme-dark .dashboard-hero h1, body.theme-dark .dashboard-hero p{ color: #e2e8f0 }
+
+body.theme-dark .card.metric{
+  background: linear-gradient(180deg,#2d3748,#4a5568);
+  border: 1px solid rgba(255,255,255,0.05);
+  box-shadow: 0 8px 30px rgba(0,0,0,0.6);
+  color: #e2e8f0;
+}
+body.theme-dark .card.metric .card-icon{ background: rgba(255,255,255,0.04); color: #e2e8f0; box-shadow:none }
+body.theme-dark .card.metric .metric-label{ color: var(--muted) }
+
+/* Left tools list items (were bright cards) */
+body.theme-dark .left-column .tools-list li{
+  background: linear-gradient(180deg,#2d3748,#4a5568);
+  border: 1px solid rgba(255,255,255,0.04);
+  color: #e2e8f0;
+  box-shadow: none;
+}
+
+/* Procura table rows and cards */
+body.theme-dark .procura-card, body.theme-dark .procura-table-card{ background: transparent }
+body.theme-dark #procura-articles-table tbody tr:nth-child(odd){ background: rgba(255,255,255,0.02) }
+body.theme-dark #procura-articles-table tbody tr:hover{ background: rgba(255,255,255,0.05); transform:none }
+
+/* POS interface and entry bar */
+body.theme-dark .pos-interface{ background: linear-gradient(180deg,#2d3748,#1a202c) }
+body.theme-dark .pos-entry-bar{ background: linear-gradient(180deg,#2d3748,#1a202c); border:1px solid rgba(255,255,255,0.05); box-shadow:0 12px 36px rgba(0,0,0,0.6) }
+body.theme-dark .pos-search-input{ background:#2d3748; border:1px solid rgba(255,255,255,0.06); color:#cbd5e0 }
+
+/* File buttons and topbar file icons */
+body.theme-dark .file-btn, body.theme-dark .topbar-buttons .file-btn{ background: linear-gradient(180deg,#2d3748,#4a5568); border:1px solid rgba(255,255,255,0.04); color:#e2e8f0 }
+
+/* Price panels and cf-sheet tweaks */
+body.theme-dark .precos-container, body.theme-dark .cf-sheet{ background: linear-gradient(180deg,#1a202c,#2d3748); border:1px solid rgba(255,255,255,0.05); color:#e2e8f0 }
+body.theme-dark .preco-venda-linha{ background: linear-gradient(180deg,#2d3748,#4a5568); border:1px solid rgba(255,255,255,0.05) }
+
+/* Ensure artigo content area is dark */
+body.theme-dark .artigo-content-area{ background: transparent !important }
+
+/* cf-btn active state in dark mode */
+body.theme-dark .cf-btn.active{ background: linear-gradient(90deg, rgba(255,255,255,0.05), rgba(255,255,255,0.07)); color:#e2e8f0; border-color: rgba(255,255,255,0.05) }
+
+/* Override modern styles for traditional ERP look */
+.window[data-window="orcamento"] {
+  background: #f0f0f0 !important;
+  border: 2px outset #ccc !important;
+  border-radius: 0 !important;
+  box-shadow: 2px 2px 8px rgba(0,0,0,0.3) !important;
+}
+
+.window[data-window="orcamento"] .titlebar {
+  background: #c0c0c0 !important;
+  border-bottom: 1px solid #808080 !important;
+  border-radius: 0 !important;
+}
+
+.window[data-window="orcamento"] .titlebar .title {
+  color: #000 !important;
+  text-shadow: none !important;
+}
+
+.window[data-window="orcamento"] .win-btn {
+  background: #e0e0e0 !important;
+  border: 1px outset #ccc !important;
+  border-radius: 0 !important;
+  color: #000 !important;
+}
+
+.window[data-window="orcamento"] .win-btn:hover {
+  background: #d0d0d0 !important;
+  transform: none !important;
+}
+
+.window[data-window="orcamento"] .content {
+  padding: 0 !important;
+}
+
+/* Dark mode overrides for traditional look - make it look like classic Windows */
+body.theme-dark .window[data-window="orcamento"] {
+  background: #c0c0c0 !important;
+  border: 2px outset #808080 !important;
+  color: #000 !important;
+}
+
+body.theme-dark .window[data-window="orcamento"] .titlebar {
+  background: #000080 !important;
+  color: #fff !important;
+}
+
+body.theme-dark .window[data-window="orcamento"] .titlebar .title {
+  color: #fff !important;
+}
+
+body.theme-dark .window[data-window="orcamento"] .win-btn {
+  background: #c0c0c0 !important;
+  border: 1px outset #808080 !important;
+  color: #000 !important;
+}
+
+body.theme-dark .window[data-window="orcamento"] input,
+body.theme-dark .window[data-window="orcamento"] select,
+body.theme-dark .window[data-window="orcamento"] textarea {
+  background: white !important;
+  color: #000 !important;
+  border: 1px inset #ccc !important;
+}
+
+body.theme-dark .window[data-window="orcamento"] button {
+  background: #e0e0e0 !important;
+  border: 1px outset #ccc !important;
+  color: #000 !important;
+}
+
+body.theme-dark .window[data-window="orcamento"] .orc-tab-btn {
+  background: #e8e8e8 !important;
+  border: none !important;
+  color: #000 !important;
+}
+
+body.theme-dark .window[data-window="orcamento"] .orc-tab-btn.active {
+  background: #f0f0f0 !important;
+  font-weight: bold !important;
+}
+
+/* Responsive layout for orçamento window when window width < 900px */
+.window[data-window="orcamento"].responsive-narrow .orc-geral-container {
+  width: 100% !important;
+  max-width: 400px !important;
+}
+
+.window[data-window="orcamento"].responsive-narrow .form-row {
+  flex-direction: column !important;
+  align-items: flex-start !important;
+  margin-bottom: 16px !important;
+}
+
+.window[data-window="orcamento"].responsive-narrow .form-row label {
+  width: auto !important;
+  margin-bottom: 4px !important;
+  margin-right: 0 !important;
+  text-align: left !important;
+  font-weight: bold !important;
+  padding: 2px 0 !important;
+}
+
+.window[data-window="orcamento"].responsive-narrow .form-row select,
+.window[data-window="orcamento"].responsive-narrow .form-row input[type="text"],
+.window[data-window="orcamento"].responsive-narrow .form-row input[type="date"] {
+  width: 100% !important;
+  max-width: 350px !important;
+  margin-right: 0 !important;
+  margin-bottom: 8px !important;
+}
+
+.window[data-window="orcamento"].responsive-narrow .form-row input[type="number"] {
+  width: 80px !important;
+  margin-right: 4px !important;
+}
+
+.window[data-window="orcamento"].responsive-narrow .form-row > div {
+  width: 100% !important;
+  justify-content: flex-start !important;
+}
+
+/* Toolbar stays the same - no responsive changes needed */
+
+/* Add vertical scroll to content when needed */
+.window[data-window="orcamento"].responsive-narrow {
+  overflow-y: auto !important;
+}
+
+.window[data-window="orcamento"].responsive-narrow .content {
+  overflow-y: auto !important;
+  max-height: calc(100vh - 200px) !important;
+}
+
+/* Responsive header */
+.window[data-window="orcamento"].responsive-narrow .orc-header {
+  flex-direction: column !important;
+  align-items: flex-start !important;
+  gap: 8px !important;
+  padding: 8px !important;
+}
+
+.window[data-window="orcamento"].responsive-narrow .orc-header > div {
+  width: 100% !important;
+  flex-wrap: wrap !important;
+  gap: 8px !important;
+}
+
+.window[data-window="orcamento"].responsive-narrow .orc-header label {
+  margin-right: 4px !important;
+  white-space: nowrap !important;
+}
+
+.window[data-window="orcamento"].responsive-narrow .orc-header select,
+.window[data-window="orcamento"].responsive-narrow .orc-header input {
+  margin-right: 8px !important;
+  margin-bottom: 4px !important;
+}
+
+/* Responsive cabeçalho section */
+.window[data-window="orcamento"].responsive-narrow .cabecalho-content {
+  padding: 8px !important;
+}
+
+.window[data-window="orcamento"].responsive-narrow .cabecalho-content > div {
+  margin-bottom: 12px !important;
+}
+
+.window[data-window="orcamento"].responsive-narrow .cabecalho-content label {
+  width: auto !important;
+  margin-bottom: 4px !important;
+  margin-right: 0 !important;
+  text-align: left !important;
+  font-weight: bold !important;
+  display: block !important;
+}
+
+.window[data-window="orcamento"].responsive-narrow .cabecalho-content input,
+.window[data-window="orcamento"].responsive-narrow .cabecalho-content select {
+  width: 100% !important;
+  max-width: 350px !important;
+  margin-bottom: 8px !important;
+}
+
+/* Styles for redesigned Edit Model modal (matches attached design) */
+.modal-model-edit { background: linear-gradient(180deg,#fff,#fbfdff); border-radius:12px; }
+.modal-model-edit .model-edit-grid { align-items:flex-start; }
+.modal-model-edit .model-edit-form label { font-size:13px; color:#0f1724; margin-bottom:6px; display:block }
+.modal-model-edit input[type="text"],
+.modal-model-edit textarea { border:1px solid #e6eef8; border-radius:8px; padding:10px; width:100%; }
+.modal-model-edit .file-hint { font-size:12px; color:#94a3b8 }
+.modal-model-edit .image-preview { width:140px; height:120px; border-radius:8px; border:1px solid #edf2f7; display:flex;align-items:center;justify-content:center; color:#94a3b8; background-repeat:no-repeat;background-position:center;background-size:contain }
+.modal-model-edit .image-controls .icon-square { width:36px; height:36px; border-radius:8px; border:1px solid #e6eef8; background:#fff; cursor:pointer; font-weight:700 }
+.modal-model-edit .image-controls .icon-square:hover { box-shadow:0 6px 14px rgba(16,24,40,0.06); transform:translateY(-2px) }
+.modal-model-edit .model-edit-actions { padding:12px 0 6px 0 }
+.modal-model-edit .model-edit-actions .btn { border-radius:20px; padding:10px 18px }
+.modal-model-edit .model-edit-actions .btn[style*="color:#ef4444"],
+.modal-model-edit .model-edit-actions .btn.model-btn-remove { color:#ef4444; background:transparent; border:0 }
+.modal-model-edit .model-edit-actions .btn-primary { background: var(--accent); border:0 }
+.modal-model-edit .model-edit-actions .btn-primary:hover { background: var(--accent-2) }
+
+@media (max-width:640px){
+  .modal-model-edit .model-edit-grid{flex-direction:column}
+  .modal-model-edit .model-edit-image{width:100%;display:flex;flex-direction:row;justify-content:center;gap:12px}
+}
+
+/* Add modal styles */
+.modal-card input[type="file"]{font-size:13px}
+.nested-modal .modal-card{max-width:520px}
+.nested-modal .modal-header h3{font-size:16px}
+.nested-modal .modal-body label{font-size:13px}
+.nested-modal .modal-actions .btn{padding:8px 14px}
+
+/* Small preview box common style */
+.image-preview{width:120px;height:90px;border-radius:8px;border:1px solid #edf2f7;display:flex;align-items:center;justify-content:center;color:#94a3b8;background-repeat:no-repeat;background-position:center;background-size:contain}
+
+/* Toast / notification styles (top-right) */
+#toast-container{position:fixed;top:18px;right:18px;z-index:40000;display:flex;flex-direction:column;gap:10px;pointer-events:none}
+.toast-item{pointer-events:auto;min-width:200px;max-width:360px;padding:10px 14px;border-radius:10px;box-shadow:0 10px 30px rgba(2,6,23,0.12);color:#0f1724;background:#fff;opacity:0;transform:translateY(-8px) scale(.98);transition:all .28s cubic-bezier(.2,.9,.25,1);font-size:13px;line-height:1.2}
+.toast-item.show{opacity:1;transform:translateY(0) scale(1)}
+.toast-success{background:linear-gradient(90deg,#ecfdf5,#bbf7d0);border:1px solid #86efac;color:#065f46}
+.toast-error{background:linear-gradient(90deg,#fff1f2,#fecaca);border:1px solid #fca5a5;color:#7f1d1d}
+.toast-warning{background:linear-gradient(90deg,#fffbeb,#fde68a);border:1px solid #fcd34d;color:#92400e}
+.toast-info{background:linear-gradient(90deg,#eef2ff,#e0e7ff);border:1px solid #c7d2fe;color:#3730a3}
+
+@media (max-width:640px){
+  #toast-container{left:12px;right:12px;top:12px}
+  .toast-item{max-width:calc(100vw - 36px)}
+}
