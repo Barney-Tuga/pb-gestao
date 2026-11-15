@@ -1,4 +1,4 @@
-# Plastiborracha ERP
+# PB Gestao
 
 A business-management platform planned for internal operations, inventory, purchasing and sales, with public catalog and mobile access considered in later phases.
 
